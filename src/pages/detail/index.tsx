@@ -1,5 +1,5 @@
 const Detail = () => {
-  return;
+  return null;
 };
 
 export default Detail;
