@@ -14,6 +14,6 @@ module.exports = {
     sourceType: 'module', // 모듈 시스템 사용시
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint', 'jest'],
-  rules: {},
+  rules: {'react/react-in-jsx-scope': 'off'},
   settings: {},
 };

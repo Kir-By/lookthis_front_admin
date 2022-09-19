@@ -1,5 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
+import {FC} from 'react';
 import styled from 'styled-components';
+import Header from '../header/Header';
 
 const StyledButton = styled.button`
   background-color: #228be6;
@@ -10,8 +12,13 @@ const StyledButton = styled.button`
   margin: 0;
 `;
 
-const Layout = () => {
-  return <StyledButton>button</StyledButton>;
+const Layout: FC = () => {
+  return (
+    <>
+      <Header></Header>
+      {/* <StyledButton>button</StyledButton> */}
+    </>
+  );
 };
 
 export default Layout;
