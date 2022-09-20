@@ -1,22 +1,17 @@
 /* eslint-disable react/react-in-jsx-scope */
-import {FC} from 'react';
+import React, {FC} from 'react';
 import styled from 'styled-components';
 import Header from '../header/Header';
+import Sidebar from '../sidebar/Sidebar';
 
-const StyledButton = styled.button`
-  background-color: #228be6;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  padding: 12px 24px;
-  margin: 0;
-`;
+const StyledBody = styled.div``;
 
-const Layout: FC = () => {
+const Layout: FC<{children: React.ReactNode | null}> = ({children = <></>}) => {
   return (
     <>
       <Header></Header>
-      {/* <StyledButton>button</StyledButton> */}
+      <Sidebar></Sidebar>
+      <StyledBody>{children}</StyledBody>
     </>
   );
 };
