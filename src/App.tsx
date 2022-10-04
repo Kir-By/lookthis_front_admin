@@ -5,6 +5,9 @@ import Layout from './common/components/layout/Layout';
 import Home from './pages/home';
 
 const App: FC = () => {
+
+  console.log('test');
+  
   return (
     <>
       <div className="App">
