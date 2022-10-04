@@ -6,7 +6,7 @@ import Home from './pages/home';
 
 const App: FC = () => {
 
-  console.log('test');
+  console.log('test2');
   
   return (
     <>
