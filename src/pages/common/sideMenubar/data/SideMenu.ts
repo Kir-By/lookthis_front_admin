@@ -1,6 +1,7 @@
 import loadable, { LoadableComponent } from '@loadable/component';
 
 const Board = loadable(() => import('pages/board'));
+const RegisterFlyer = loadable(() => import('pages/board/component/RegisterFlyer'));
 
 // 사이드 메뉴
 type SIDE_MENU_TYPE = {
@@ -14,15 +15,15 @@ type SIDE_MENU_TYPE = {
 }
 
 const sideMenus: Array<SIDE_MENU_TYPE> = [
-    // {
-    //     path: "/home",
-    //     name: "HOME",
-    //     icon: "vcard",
-    //     id: 100,
-    //     component: Home,
-    //     child: [],
-    //     addPath: []
-    // },
+    {
+        path: "/list",
+        name: "HOME",
+        icon: "vcard",
+        id: 100,
+        component: Board,
+        child: [],
+        addPath: []
+    },
     // {
     //     path: "/notice",
     //     name: "공지사항",
@@ -32,15 +33,15 @@ const sideMenus: Array<SIDE_MENU_TYPE> = [
     //     child: [],
     //     addPath: [':bType', ':bType/:bId']
     // },
-    {
-        path: "/home",
-        name: "Home",
-        icon: "vcard",
-        id: 300,
-        component: Board,
-        child: [],
-        addPath: [':bType', ':bType/:bId']
-    },
+    // {
+    //     path: "/home",
+    //     name: "Home",
+    //     icon: "vcard",
+    //     id: 300,
+    //     component: Board,
+    //     child: [],
+    //     addPath: [':bType', ':bType/:bId']
+    // },
     // {
     //     path: "/calculate",
     //     name: "정산관리",

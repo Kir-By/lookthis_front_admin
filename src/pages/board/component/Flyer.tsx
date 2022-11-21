@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 interface FlyerProps {
@@ -21,7 +22,7 @@ const Flyer: FC<FlyerProps> = ({ flyerList = [] }) => {
           {flyerList &&
             flyerList.map((flyer: any, index) => {
               return (
-                <Item key={index} url={flyer.path} title={flyer.storeName} />
+                <Item key={index} flyer={flyer} />
               );
             })}
         </div>
@@ -32,11 +33,13 @@ const Flyer: FC<FlyerProps> = ({ flyerList = [] }) => {
 
 export default Flyer;
 
-const Item: FC<{ url: string; title: string }> = ({ url, title }) => {
+const Item: FC<{ flyer: any }> = ({ flyer }) => {
+
+  const navigation = useNavigate();
   return (
-    <div style={{ padding: "20px", width: "18%" }}>
-      <img src={url} alt="" />
-      <p style={{ fontSize: "20px" }}>{title}</p>
+    <div style={{ padding: "20px", width: "18%" }} onClick={() => navigation(`/detail/${flyer.storeId}`)}>
+      <img src={flyer.path} alt="" />
+      <p style={{ fontSize: "20px" }}>{flyer.storeName}</p>
     </div>
   );
 };

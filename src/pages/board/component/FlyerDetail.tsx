@@ -20,7 +20,7 @@ import {
   import Utils from "utils/Utils";
   import styled from "styled-components";
   import FilesUpload from "./FilesUpload";
-import axios from "axios";
+import { useParams } from "react-router-dom";
   
   const SelectBox = styled.select`
     width: 140px;
@@ -66,12 +66,54 @@ import axios from "axios";
     font-family: "Spoqa Han Sans Neo", "sans-serif";
   `;
   
-  const RegisterFlyer: FC = () => {
+  interface FlyerDetailProps {
+
+  };
+  const FlyerDetail: FC = () => {
+    
+    const { id } = useParams();
+    const [store, setStore] = useState<any>({});
+    useEffect(() => {
+      const getStore = async () => {
+        const storeList: any[] = await Axios.post(
+          "https://lookthis-back.nhncloud.paas-ta.com/getStoreList",
+          JSON.stringify({ userId: "nsw3" })
+        );
+
+        const store = storeList.filter(store => store.storeId === Number(id))[0];
+        console.log('store', store);
+  
+        const flyer = await Axios.post(
+          "https://lookthis-back.nhncloud.paas-ta.com/getStoreFlyerList",
+          JSON.stringify({ storeId: store.storeId })
+        );
+        console.log('flyer', flyer);
+  
+        // console.log("getflyerAxios", getflyerAxios);
+        //   console.log('storeFlyers', storeFlyers);
+  
+        // const flyerList = await Promise.all(getflyerAxios);
+        // console.log("flyerList", flyerList);
+        // flyerList.reduce((arr, cur, index) => {
+        //   arr[index].path =
+        //     cur?.path ||
+        //     "https://image.utoimage.com/preview/cp864374/2022/09/202209000321_206.jpg";
+        //   return arr;
+        // }, storeFlyers);
+  
+        setStore((prev:any) => ({...prev, ...store, ...flyer}));
+      };
+  
+      getStore();
+    }, []);
+
     // 네이버 지도
     // const [loading, error] = useScript("https://unpkg.com/lodash");
     const [loading, error] = useScript(
       "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=my4y6x6w9j&submodules=geocoder"
     );
+    const {naver} = window;
+    
     const [curLocation, setCurLocation] = useState<naver.maps.LatLng | null>(
       null
     );
@@ -177,103 +219,42 @@ import axios from "axios";
       console.log(res);
       alert("등록완료!");
     };
-
-    const [file, setFile] = useState<any>(null);
-    console.log(file);
-
-    const upload = async () => {
-      console.log('여기');
-        const formData = new FormData();
-        formData.append('file', file[0]);
-        formData.append('flyerId', file[0]);
-        formData.append('createDate', file[0]);
-        formData.append('endValidDate', file[0]);
-        formData.append('status', file[0]);
-        console.log(formData);
-        // const res = await axios.post('https://lookthis-back.nhncloud.paas-ta.com/saveFlyer', formData);
-        // console.log('res', res);
-        // return res;
-    };
   
     return (
       <>
-            <div className="view-wrap">
-              {/* <!-- 카테고리, 날짜 --> */}
-              <div className="record-wrap">
-                <p className="sort-state">등록일자</p>
-                <p className="date">{Utils.converDateFormat(new Date(), "-")}</p>
-              </div>
-              {/* <!-- 상태, 제목 --> */}
-              <InfoInput
-                inputName="storeName"
-                inputValue={storeInfo.storeName}
-                placeholder="가게 이름을 입력하세요"
-                title="가게 이름"
-                setFn={handleStoreInfo}
-              />
-              <InfoInput
-                inputName="address"
-                inputValue={storeInfo.address}
-                placeholder="가게 주소을 입력하세요"
-                title="가게 주소"
-                setFn={handleStoreInfo}
-              >
-                &nbsp;&nbsp;
-                <Button
-                  onClick={getSearchAddressCoordinate}
-                >
-                  검 색
-                </Button>
-              </InfoInput>
-              <div style={{padding: '0px 20px 0px'}}><Map curLocation={storeInfo.storePositon} /></div>
-              {/* <!-- 내용 --> */}
-              <div className="content-wrap">
-                <Span>광고 위치 선택</Span>&nbsp;&nbsp;
-                {/* <span></span> */}
-                <SelectBox
-                  value={selectSpot}
-                  onChange={(e) => movoSelectSpot(e.target.value)}
-                >
-                  <option value={""}>위치를 선택하세요</option>
-                  {spotList.map((spot: any, index: number) => (
-                    <option key={index} value={spot.lat + " " + spot.lng}>
-                      {spot.station + " " + spot.stationExit + "번 출구"}
-                    </option>
-                  ))}
-                  {/* <option>TEST</option> */}
-                </SelectBox>
-                &nbsp;&nbsp;
-                <Input
-                  placeholder="원하는 위치를 검색하세요"
-                  value={searchCondition}
-                  onChange={(e) => setSearchCondition((prev) => e.target.value)}
-                />
-                &nbsp;&nbsp;
-                <Button onClick={searchSpot}>검 색</Button>
-                {/* <div
-                  ref={mapElement}
-                  style={{ minHeight: "400px", marginTop: "10px" }}
-                /> */}
-                <Map curLocation={curLocation} />
-              </div>
-              <div className="file-wrap">
-                이미지 등록
-                <FilesUpload file={file} setFile={setFile} />
-              </div>
-              {/* <Content contentsUrl={contents} /> */}
-              {/* <!-- 파일첨부 --> */}
-              {/* {<FileList boardId={boardId} />} */}
+        {naver && store && (
+          <div className="view-wrap">
+            <InfoInput
+              inputName="storeName"
+              inputValue={store.storeName}
+              title="가게 이름"
+            />
+            <InfoInput
+              inputName="address"
+              inputValue={store.address}
+              title="가게 주소"
+            />
+            <div style={{ padding: "0px 20px 0px" }}>
+              <Map curLocation={new naver.maps.LatLng(Number(store.lat), Number(store.lng))} />
             </div>
-            <div className="btn-wrap">
-              <button className="btn-list-more" onClick={registerStore} style={{background: 'rgb(241,101,138)'}}>
-                등 록
-              </button>
+            {/* <!-- 내용 --> */}
+            <div className="content-wrap">
+              <Map curLocation={curLocation} />
             </div>
-          </>
+            <div className="file-wrap">
+              이미지 등록
+              {/* <FilesUpload /> */}
+            </div>
+            {/* <Content contentsUrl={contents} /> */}
+            {/* <!-- 파일첨부 --> */}
+            {/* {<FileList boardId={boardId} />} */}
+          </div>
+        )}
+      </>
     );
   };
   
-  export default RegisterFlyer;
+  export default FlyerDetail;
   
   interface MapProps {
     curLocation: any;
@@ -358,27 +339,19 @@ import axios from "axios";
   
   const InfoInput: FC<{
     title: string;
-    placeholder: string;
     inputName: string;
     inputValue: any;
-    setFn: (key: string, value: string) => void;
     children?: ReactNode;
-  }> = ({ title, placeholder, inputName, inputValue, setFn, children }) => {
-    const handleInput: ChangeEventHandler<HTMLInputElement> = (e) => {
-      const key = e.target.name;
-      const value = e.target.value;
-      setFn(key, value);
-    };
+  }> = ({ title, inputName, inputValue, children }) => {
+    
     return (
       <div className="title-wrap">
         <p className="sort-state">{title}</p>
-        {/* <p className="icon-state">가게 이름</p> */}
         <p className="title">
           <Input
-            placeholder={placeholder}
             name={inputName}
-            value={inputValue}
-            onChange={handleInput}
+            defaultValue={inputValue}
+            disabled
           />
         </p>
         {children}

@@ -6,10 +6,7 @@ import Flyer from "./Flyer";
 import Axios from "utils/Axios";
 
 const FlyerList: FC = () => {
-  // const { data: boardList } = BOARD_SERVICE.useBoardList(['boardList', JSON.stringify(listSearchCondition)], listSearchCondition);
-  // const { out: pageInfo } = boardList as BoardListResult || {};
-
-  // const { width, headerText } = TABLE_COLUMN_INFO;
+  
   const [storeFlyers, setStoreFlyers] = useState<any[]>([]);
   useEffect(() => {
     const getStoreList = async () => {
@@ -28,6 +25,7 @@ const FlyerList: FC = () => {
             )
           );
           arr[1].push({
+            storeId: curStore.storeId,
             storeName: curStore.storeName,
             address: curStore.address,
             lat: curStore.lat,
@@ -38,7 +36,7 @@ const FlyerList: FC = () => {
         [[], []]
       );
 
-      console.log("getflyerAxios", getflyerAxios);
+      // console.log("getflyerAxios", getflyerAxios);
       //   console.log('storeFlyers', storeFlyers);
 
       const flyerList = await Promise.all(getflyerAxios);

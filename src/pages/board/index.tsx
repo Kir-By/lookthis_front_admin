@@ -1,17 +1,25 @@
-import { FC, useState } from "react";
-
-// Util
-import Utils from "utils/Utils";
+import { FC, useEffect, useState } from "react";
 
 // component
-import RegisterFlyer from "./component/RegisterFlyer";
-import FlyerList from "./component/FlyerList";
+import { useNavigate } from "react-router-dom";
+import loadable from '@loadable/component';
+const FlyerList = loadable(() => import('pages/board/component/FlyerList'));
+const FlyerDetail = loadable(() => import('pages/board/component/FlyerDetail'));
+const RegisterFlyer = loadable(() => import('pages/board/component/RegisterFlyer'));
 
 const BoardContainer: FC = () => {
+
+  const navigation = useNavigate();
   const [status, setStatus] = useState<BoardStatus>(BOARD_STATUS.LIST);
+  const pathName = window.location.pathname;
+  useEffect(() => {
+    setStatus(prev => pathName as BoardStatus);
+  },[pathName]);
+
   const setComponent = () => {
     if (status === BOARD_STATUS.LIST) return <FlyerList />;
     else if (status === BOARD_STATUS.REGISTER) return <RegisterFlyer />;
+    else if (status.includes(BOARD_STATUS.DETAIL)) return <FlyerDetail />;
   };
 
   return (
@@ -40,13 +48,7 @@ const BoardContainer: FC = () => {
                   width: "100px",
                   fontSize: "15px",
                 }}
-                onClick={() =>
-                  setStatus((prev) =>
-                    prev === BOARD_STATUS.LIST
-                      ? BOARD_STATUS.REGISTER
-                      : BOARD_STATUS.LIST
-                  )
-                }
+                onClick={() => status === BOARD_STATUS.LIST ? navigation('/register') : navigation('/list')}
               >
                 {status === BOARD_STATUS.LIST ? "등 록" : "목 록"}
               </button>
@@ -64,8 +66,8 @@ const BoardContainer: FC = () => {
 export default BoardContainer;
 
 const BOARD_STATUS = {
-  LIST: "list",
-  REGISTER: "regithst",
-  DETAIL: "detail",
+  LIST: "/list",
+  REGISTER: "/register",
+  DETAIL: "/detail",
 } as const;
 type BoardStatus = typeof BOARD_STATUS[keyof typeof BOARD_STATUS];

@@ -15,7 +15,7 @@ const upload = (file, onUploadProgress) => {
 }
 
 const getFiles = () => {
-    // return axios.get("/files");
+    return axios.get("/files");
 }
 
 const FileUploadService = {
