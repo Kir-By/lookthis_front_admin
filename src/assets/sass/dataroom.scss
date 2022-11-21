@@ -1,0 +1,20 @@
+.dataroom-wrap { flex-direction: initial; align-items: baseline;
+    .contents {
+        position: relative;
+        width: 100%;
+        padding-top: 40px;
+        .board-wrap { 
+            // tr {
+            //     &:nth-child(2) {
+            //         td { font-weight: bold; background: #fff7f9; }
+            //     }
+            // }
+            .important { 
+                td { font-weight: bold; background: #fff7f9; }
+            }
+        }    
+        .result-function-wrap { margin-top: 0px; justify-content: center; 
+            .filter-number { bottom: -11px; }
+        }
+    }
+}

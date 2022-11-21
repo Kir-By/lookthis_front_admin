@@ -1,0 +1,90 @@
+.notice-view-wrap { 
+    .contents { 
+        position: relative;
+        width: 100%;
+        padding-top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        .tab-wrap { display: flex;  border-bottom: 2px solid #ddd;
+            .tab { 
+                line-height: 18px;
+                padding: 14px 40px; 
+                font-size: 16px;
+                font-weight: bold;
+                color: #ddd;
+                border-top: 2px solid #ddd;
+                border-right: 2px solid #ddd;
+                background: #fff;
+                cursor: pointer;
+                &:first-child { border-top-left-radius: 10px; }
+                &:last-child { border-top-right-radius: 10px; }
+                &.active {
+                    border: 2px solid #f1658a;
+                    background: #f1658a;
+                    color: #fff;
+                }
+            }
+        }
+        .view-wrap { padding: 30px 0px; border-radius: 20px; background: #fff; box-shadow: 0 0 6px 0 rgba(0,0,0,0.08); 
+            .record-wrap { display: flex; line-height: 14px; padding: 0px 30px;
+                .sort-state { font-size: 14px; font-weight: bold; color: #000; }
+                .date { 
+                    padding-left: 12px; 
+                    margin-left: 12px;
+                    font-size: 14px; 
+                    font-weight: 400; 
+                    color: #999; 
+                    border-left: 1px solid #ddd; 
+                }
+            }
+        }
+        .file-wrap { padding: 30px 20px 0px; border-top: 1px solid #ddd; margin-top: 40px;
+            .file { 
+                padding-bottom: 15px;
+                font-size: 14px; 
+                font-weight: 400; 
+                color: #555; 
+                text-decoration: underline;
+                &:last-child { padding-bottom: 0px; }
+                span { position: relative; cursor: pointer;
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        top: 2px;
+                        right: -24px;
+                        width: 16px;
+                        height: 16px;
+                        background: url('../../assets/images/icon/i_download.svg') 0 0 no-repeat;
+                    }
+                }
+            }
+        }
+        .title-wrap { display: flex; padding: 14px 20px 0px; align-items: center;
+            .icon-state { 
+                height: 17px;
+                line-height: 16px;
+                padding: 3.5px 9px;
+                color: #f52323;
+                font-size: 12px;
+                font-weight: bold;
+                border: 1px solid #f52323;
+                border-radius: 20px;
+            }
+            .title { 
+                margin-top: 0px;
+                margin-left: 7px;
+            }
+        }
+        .content-wrap { padding: 40px 20px 0px; margin-top: 30px; border-top: 1px solid #ddd; color: #555; }
+        .btn-wrap { margin-top: 30px; text-align: center; }
+    }
+}
+.btn-list-more {
+    width: 130px;
+    height: 54px;
+    font-size: 18px;
+    color: #fff;
+    border-radius: 8px;
+    background: #3a3a4d;
+}

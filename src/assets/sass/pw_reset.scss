@@ -1,0 +1,27 @@
+.alert-layer {
+    .msg-wrap { height: auto; 
+        .description { 
+            line-height: 22px;
+            margin-top: 7px;
+            font-size: 14px; 
+            color: #999;
+        }
+        .input-wrap { display: flex; margin-top: 26px; justify-content: center;
+            .input { 
+                width: 285px;
+                height: 60px;
+                margin: 0px;
+                border: 1px solid #ddd;
+                border-right: 0px;
+                border-radius: 0px;
+            }
+            .btn-pw-send {
+                width: 144px;
+                height: 60px;
+                border: 1px solid #3a3a4d;
+                font-size: 16px;
+                color: #3a3a4d;
+            }
+        }
+    }
+}

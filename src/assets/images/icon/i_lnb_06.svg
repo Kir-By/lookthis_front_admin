@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15" height="15" viewBox="0 0 15 15">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="사각형_539" data-name="사각형 539" width="15" height="15" transform="translate(20 21)" fill="#fff" stroke="#707070" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <g id="icon_sales_lnb" transform="translate(-20 -21)" clip-path="url(#clip-path)">
+    <g id="_8666620_database_icon" data-name="8666620_database_icon" transform="translate(19.318 20.318)">
+      <ellipse id="타원_1" data-name="타원 1" cx="6.136" cy="2.045" rx="6.136" ry="2.045" transform="translate(2.045 1.364)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <path id="패스_63" data-name="패스 63" d="M14.318,8.182c0,1.132-2.727,2.045-6.136,2.045S2.045,9.314,2.045,8.182" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <path id="패스_64" data-name="패스 64" d="M2.045,3.409v9.545C2.045,14.086,4.773,15,8.182,15s6.136-.914,6.136-2.045V3.409" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+    </g>
+  </g>
+</svg>

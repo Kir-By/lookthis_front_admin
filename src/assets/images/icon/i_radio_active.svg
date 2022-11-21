@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <g style="fill:#fff;stroke:#f1658a">
+        <rect width="20" height="20" rx="10" style="stroke:none"/>
+        <rect x=".5" y=".5" width="19" height="19" rx="9.5" style="fill:none"/>
+    </g>
+    <rect data-name="pop_radio_nor" width="8" height="8" rx="4" transform="translate(6 6)" style="fill:#f1658a"/>
+</svg>

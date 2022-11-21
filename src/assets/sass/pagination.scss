@@ -1,0 +1,10 @@
+.btn-prev {
+    &:disabled {
+        background: url('../../assets/images/icon/i_num_prev_dim.svg') 0 0 no-repeat;
+    }
+}
+.btn-next {
+    &:disabled {
+        background: url('../../assets/images/icon/i_num_next_dim.svg') 0 0 no-repeat;
+    }
+}

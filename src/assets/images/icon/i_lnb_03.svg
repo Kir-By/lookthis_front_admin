@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
+    <defs>
+        <clipPath id="pu17qg1ura">
+            <path data-name="사각형 536" transform="translate(20 22)" style="fill:#fff;stroke:#707070" d="M0 0h15v15H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="8666585_archive_icon" transform="translate(-20 -22)" style="clip-path:url(#pu17qg1ura)">
+        <path data-name="패스 58" d="M13 4.667v8.125H1.75V4.667" transform="translate(20.125 22.333)" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round"/>
+        <path data-name="사각형 541" transform="translate(20.625 23.875)" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round" d="M0 0h13.75v3.125H0z"/>
+        <path data-name="선 1" transform="translate(26.25 29.5)" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round" d="M0 0h2.5"/>
+    </g>
+</svg>

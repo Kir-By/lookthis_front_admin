@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+    <defs>
+        <clipPath id="mt03oszj1a">
+            <path data-name="사각형 531" transform="translate(234 38)" style="fill:#fff;stroke:#707070" d="M0 0h22v22H0z"/>
+        </clipPath>
+    </defs>
+    <g data-name="8666539_pie_chart_icon" transform="translate(-234 -38)" style="clip-path:url(#mt03oszj1a)">
+        <path data-name="패스 77" d="M21.21 15.89A10 10 0 1 1 8 2.83" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px" transform="translate(233.008 37.003)"/>
+        <path data-name="패스 78" d="M22 12A10 10 0 0 0 12 2v10z" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px" transform="translate(233.008 37.003)"/>
+    </g>
+</svg>

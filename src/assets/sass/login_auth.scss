@@ -1,0 +1,31 @@
+.login-widget {
+    .inner {
+        .auth-wrap { 
+            .contents { width: auto; padding-top: 0px;
+                .input-wrap { padding-top: 0px; }
+            }
+        }
+    }
+}
+.auth-wrap {
+    @include layout-init;
+    .contents { width: 450px; padding-top: 180px;
+        .description { margin-bottom: 20px; font-size: 16px; color: #fff; text-align: center; }
+        .input-wrap { position: relative;
+            .input { padding-right: 70px; }
+            .resend { 
+                position: absolute;
+                top: 17px;
+                right: 15px;
+                z-index: 10;
+                font-size: 16px;
+                font-weight: bold;
+                color: #666;
+                text-decoration: underline;
+            }
+        }
+        .time-valid { padding: 10px 0px 0px 15px; font-size: 14px; color: #a9a9b2; 
+            .point { color: #fff; }
+        }
+    }
+}

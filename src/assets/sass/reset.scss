@@ -1,0 +1,16 @@
+body,p,dl,ol,ul,li,dd,input,h1,h2,h3,h4,h5,h6,article,section,input,select,button,pre,textarea { margin: 0px; padding: 0px; font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+body { background: #3a3a4d; }
+textarea { padding: 0px; outline: none; resize: none; }
+img { vertical-align: top; }
+table th,table td { font-weight: normal; }
+a { color: inherit; text-decoration: auto; }
+i { font-style: normal; }
+ol,ul,li { list-style: none;}
+table { width: 100%; }
+button { border: 0px; background: none; cursor: pointer; }
+input { outline: none; margin: 0; -webkit-appearance: none; }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
