@@ -575,11 +575,38 @@ font-weight: bold;
 text-align: center;
 }
 
+.list_list_btn {
+    padding: 12px 10px;
+    color: #fff;
+    border-radius: 4px;
+    background: #49b967;
+    width: 100px;
+    font-size: 15px;
+}
+
 .list_register_btn {
     padding: 12px 10px;
     color: #fff;
     border-radius: 4px;
     background: #f1658a;
+    width: 100px;
+    font-size: 15px;
+}
+
+.list_update_btn {
+    padding: 12px 10px;
+    color: #fff;
+    border-radius: 4px;
+    background: #65bbf1;
+    width: 100px;
+    font-size: 15px;
+}
+
+.list_delete_btn {
+    padding: 12px 10px;
+    color: #fff;
+    border-radius: 4px;
+    background: #040404;
     width: 100px;
     font-size: 15px;
 }
