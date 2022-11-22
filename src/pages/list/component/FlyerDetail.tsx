@@ -9,15 +9,20 @@ import "assets/sass/notice_view.scss";
 
 // Type
 import { useParams } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { userInfo } from "state";
 
 const FlyerDetail: FC = () => {
   const { id } = useParams();
   const [store, setStore] = useState<any>({});
+
+  const userId = useRecoilValue(userInfo);
+
   useEffect(() => {
     const getStore = async () => {
       const storeList: any[] = await Axios.post(
         "https://lookthis-back.nhncloud.paas-ta.com/getStoreList",
-        JSON.stringify({ userId: "nsw3" })
+        JSON.stringify({ userId })
       );
 
       const store = storeList.filter(
