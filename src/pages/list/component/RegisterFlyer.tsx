@@ -21,6 +21,7 @@ import {
   import FilesUpload from "./FilesUpload";
 import { userInfo } from "state";
 import { useRecoilValue } from "recoil";
+import { useNavigate } from "react-router-dom";
   
   const RegisterFlyer: FC = () => {
     // 네이버 지도
@@ -118,6 +119,7 @@ import { useRecoilValue } from "recoil";
     };
   
     // 가게 정보 등록
+    const navigation = useNavigate();
     const registerStore = async () => {
         
       console.log('storeInfo', storeInfo);
@@ -128,6 +130,7 @@ import { useRecoilValue } from "recoil";
         const flyerId = await saveFlyer(storeId);
         await saveFlyerSpot(flyerId);
         alert("등록완료!");  
+        navigation(`/detail/${storeId}`);
       }
       catch (error) {
         console.log(error);

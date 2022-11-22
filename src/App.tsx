@@ -37,6 +37,9 @@ function App() {
           <Route path="/detail" element={<FlyerList />}>
             <Route path=":id" element={null} />
           </Route>
+          <Route path="/update" element={<FlyerList />}>
+            <Route path=":id" element={null} />
+          </Route>
 
           {/* {menuRoute.map((data: SIDE_MENU_TYPE, key: number) => {
                         if (data?.child.length > 0) {
