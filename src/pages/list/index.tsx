@@ -3,11 +3,11 @@ import { FC, useEffect, useState } from "react";
 // component
 import { useNavigate } from "react-router-dom";
 import loadable from '@loadable/component';
-const FlyerList = loadable(() => import('pages/board/component/FlyerList'));
-const FlyerDetail = loadable(() => import('pages/board/component/FlyerDetail'));
-const RegisterFlyer = loadable(() => import('pages/board/component/RegisterFlyer'));
+const FlyerList = loadable(() => import('pages/list/component/FlyerList'));
+const FlyerDetail = loadable(() => import('pages/list/component/FlyerDetail'));
+const RegisterFlyer = loadable(() => import('pages/list/component/RegisterFlyer'));
 
-const BoardContainer: FC = () => {
+const FlyerListContainer: FC = () => {
 
   const navigation = useNavigate();
   const [status, setStatus] = useState<BoardStatus>(BOARD_STATUS.LIST);
@@ -63,7 +63,7 @@ const BoardContainer: FC = () => {
   );
 };
 
-export default BoardContainer;
+export default FlyerListContainer;
 
 const BOARD_STATUS = {
   LIST: "/list",

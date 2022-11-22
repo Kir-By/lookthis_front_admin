@@ -7,64 +7,20 @@ import {
     useState,
   } from "react";
   
-  import selectBoxImg from "static/media/i_arrow_b_downdrop.045cf5d….svg";
-  
   // Hook
-  import Axios from "utils/Axios";
   import useScript from "hooks/useScript";
   
   // Css
   import "assets/sass/notice_view.scss";
   
-  // Type
+  // Util
+  import Axios from "utils/Axios";
   import Utils from "utils/Utils";
-  import styled from "styled-components";
+
+  // Component
   import FilesUpload from "./FilesUpload";
-import axios from "axios";
-  
-  const SelectBox = styled.select`
-    width: 140px;
-    height: 46px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    background: #fff
-      // url(http://localhost:3000/static/media/i_arrow_b_downdrop.045cf5d….svg) 93%
-      center no-repeat;
-    outline: none;
-    appearance: none;
-    cursor: pointer;
-    text-indent: 10px;
-  `;
-  
-  const Button = styled.button`
-    width: 66px;
-    height: 46px;
-    font-size: 16px;
-    border: 1px solid rgb(58, 58, 77);
-    border-radius: 4px;
-    background: rgb(255, 255, 255);
-  `;
-  
-  const Input = styled.input`
-    width: 260px;
-    height: 46px;
-    line-height: 46px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-    font-size: 16px;
-    font-weight: 300;
-    text-indent: 10px;
-    color: #999;
-  `;
-  
-  const Span = styled.span`
-    margin: 0px;
-    padding: 0px;
-    font-family: "Spoqa Han Sans Neo", "sans-serif";
-  `;
+import { userInfo } from "state";
+import { useRecoilValue } from "recoil";
   
   const RegisterFlyer: FC = () => {
     // 네이버 지도
@@ -75,6 +31,8 @@ import axios from "axios";
     const [curLocation, setCurLocation] = useState<naver.maps.LatLng | null>(
       null
     );
+    
+    const userId = useRecoilValue(userInfo);
   
     // 주소검색해서 위도, 경도 가져오기
     const getSearchAddressCoordinate = () => {
@@ -121,6 +79,7 @@ import axios from "axios";
   
     // 광고 등록장소 정보
     const [spotList, setSpotList] = useState<any[]>([]);
+    console.log(spotList);
     // 로딩 시 광고 등록장소 리스트 가져오기
     useEffect(() => {
       const getSpotList = async () => {
@@ -148,10 +107,12 @@ import axios from "axios";
   
     // 선택한 광고 등록장소
     const [selectSpot, setSelectSpot] = useState("");
+    console.log('selectSpot', selectSpot);
     // 선택한 광고 등록장소로 지도 이동
     const movoSelectSpot = (latLng: string) => {
       if (!latLng) return;
-      const [lat, lng] = latLng.split(" ");
+      const [lat, lng, spotId] = latLng.split(" ");
+      setSpotId(Number(spotId));
       setSelectSpot(lat + " " + lng);
       setCurLocation(new naver.maps.LatLng(Number(lat), Number(lng)));
     };
@@ -159,40 +120,65 @@ import axios from "axios";
     // 가게 정보 등록
     const registerStore = async () => {
         
+      console.log('storeInfo', storeInfo);
       if(Object.values(storeInfo).filter(item => !item).length > 0) return alert('가게 정보를 입력하세요');
-      const [lat, lng] = selectSpot.split(" ");
-      const params = {
-        userId: "nsw3",
-        address: storeInfo.address,
-        authStatus: 1,
-        authUser: "관리자",
-        lat: Number(lat),
-        lng: Number(lng),
-        storeName: storeInfo.storeName,
+      
+      try {
+        const storeId = await saveStore();
+        const flyerId = await saveFlyer(storeId);
+        await saveFlyerSpot(flyerId);
+        alert("등록완료!");  
+      }
+      catch (error) {
+        console.log(error);
+        alert("에러발생!!!")
       };
-      const res = await Axios.put(
-        "https://lookthis-back.nhncloud.paas-ta.com/saveStore",
-        JSON.stringify(params)
-      );
-      console.log(res);
-      alert("등록완료!");
+      
     };
 
     const [file, setFile] = useState<any>(null);
     console.log(file);
 
-    const upload = async () => {
-      console.log('여기');
+    const saveStore = async () => {
+
+      const saveStoreParams = {
+        userId,
+        address: storeInfo.address, // 가게 위치
+        lat: Number(storeInfo.storePositon.y), // 가게 lat
+        lng: Number(storeInfo.storePositon.x), // 가게 lng
+        storeName: storeInfo.storeName, // 가게 이름
+      };
+
+      const res = await Axios.put(
+        "https://lookthis-back.nhncloud.paas-ta.com/saveStore",
+        JSON.stringify(saveStoreParams)
+      );
+
+      return res;
+    };
+
+    const saveFlyer = async (storeId:number) => {
         const formData = new FormData();
-        formData.append('file', file[0]);
-        formData.append('flyerId', file[0]);
-        formData.append('createDate', file[0]);
-        formData.append('endValidDate', file[0]);
-        formData.append('status', file[0]);
-        console.log(formData);
-        // const res = await axios.post('https://lookthis-back.nhncloud.paas-ta.com/saveFlyer', formData);
-        // console.log('res', res);
-        // return res;
+        formData.append('storeId', storeId.toString());
+        formData.append('flyerFile', file[0]);
+        console.log('formData', formData);
+        const res = await Axios.put('https://lookthis-back.nhncloud.paas-ta.com/saveFlyer', formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data',
+              Accept: 'application/json; charset=UTF-8',
+          },
+      });
+        console.log('flyerId', res);
+        return res;
+    };
+
+    const [spotId, setSpotId] = useState(0);
+    const saveFlyerSpot = async (flyerId: number) => {
+      console.log(spotId);
+      await Axios.put(
+        "https://lookthis-back.nhncloud.paas-ta.com/insertFlyerSpot",
+        JSON.stringify({ spotId, flyerId })
+      );
     };
   
     return (
@@ -219,37 +205,39 @@ import axios from "axios";
                 setFn={handleStoreInfo}
               >
                 &nbsp;&nbsp;
-                <Button
+                <button className="registerBtn"
                   onClick={getSearchAddressCoordinate}
                 >
                   검 색
-                </Button>
+                </button>
               </InfoInput>
               <div style={{padding: '0px 20px 0px'}}><Map curLocation={storeInfo.storePositon} /></div>
               {/* <!-- 내용 --> */}
               <div className="content-wrap">
-                <Span>광고 위치 선택</Span>&nbsp;&nbsp;
+                <span className="registerSpan">광고 위치 선택</span>&nbsp;&nbsp;
                 {/* <span></span> */}
-                <SelectBox
+                <select
+                className="registerSelect"
                   value={selectSpot}
                   onChange={(e) => movoSelectSpot(e.target.value)}
                 >
                   <option value={""}>위치를 선택하세요</option>
                   {spotList.map((spot: any, index: number) => (
-                    <option key={index} value={spot.lat + " " + spot.lng}>
+                    <option key={index} value={spot.lat + " " + spot.lng + " " + spot.spotId}>
                       {spot.station + " " + spot.stationExit + "번 출구"}
                     </option>
                   ))}
                   {/* <option>TEST</option> */}
-                </SelectBox>
+                </select>
                 &nbsp;&nbsp;
-                <Input
+                <input
+                  className="storeInfo"
                   placeholder="원하는 위치를 검색하세요"
                   value={searchCondition}
                   onChange={(e) => setSearchCondition((prev) => e.target.value)}
                 />
                 &nbsp;&nbsp;
-                <Button onClick={searchSpot}>검 색</Button>
+                <button className="registerBtn" onClick={searchSpot}>검 색</button>
                 {/* <div
                   ref={mapElement}
                   style={{ minHeight: "400px", marginTop: "10px" }}
@@ -374,7 +362,8 @@ import axios from "axios";
         <p className="sort-state">{title}</p>
         {/* <p className="icon-state">가게 이름</p> */}
         <p className="title">
-          <Input
+          <input
+            className="storeInfo"
             placeholder={placeholder}
             name={inputName}
             value={inputValue}

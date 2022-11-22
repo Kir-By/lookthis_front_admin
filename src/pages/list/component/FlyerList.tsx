@@ -4,15 +4,23 @@ import React, { FC, useEffect, useState } from "react";
 import Pagination from "pages/common/pagination";
 import Flyer from "./Flyer";
 import Axios from "utils/Axios";
+import { userInfo } from "state";
+import { useRecoilValue } from "recoil";
 
 const FlyerList: FC = () => {
   
+  const userId = useRecoilValue(userInfo);
+  console.log(userId);
   const [storeFlyers, setStoreFlyers] = useState<any[]>([]);
+
   useEffect(() => {
+
+    if(!userId) return;
+
     const getStoreList = async () => {
       const storeList: any[] = await Axios.post(
         "https://lookthis-back.nhncloud.paas-ta.com/getStoreList",
-        JSON.stringify({ userId: "nsw3" })
+        JSON.stringify({ userId })
       );
       console.log("storeList", storeList);
 
@@ -42,8 +50,9 @@ const FlyerList: FC = () => {
       const flyerList = await Promise.all(getflyerAxios);
       console.log("flyerList", flyerList);
       flyerList.reduce((arr, cur, index) => {
+        console.log('cur.path', cur[0].path, cur);
         arr[index].path =
-          cur?.path ||
+          cur[0].path ||
           "https://image.utoimage.com/preview/cp864374/2022/09/202209000321_206.jpg";
         return arr;
       }, storeFlyers);
@@ -54,7 +63,7 @@ const FlyerList: FC = () => {
     };
 
     getStoreList();
-  }, []);
+  }, [userId]);
 
   const [pageInfo, setPageInfo] = useState({
     dataCnt: 0,

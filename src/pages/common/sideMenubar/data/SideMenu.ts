@@ -1,7 +1,7 @@
 import loadable, { LoadableComponent } from '@loadable/component';
 
-const Board = loadable(() => import('pages/board'));
-const RegisterFlyer = loadable(() => import('pages/board/component/RegisterFlyer'));
+const Flyer = loadable(() => import('pages/list'));
+const RegisterFlyer = loadable(() => import('pages/list/component/RegisterFlyer'));
 
 // 사이드 메뉴
 type SIDE_MENU_TYPE = {
@@ -20,7 +20,7 @@ const sideMenus: Array<SIDE_MENU_TYPE> = [
         name: "HOME",
         icon: "vcard",
         id: 100,
-        component: Board,
+        component: Flyer,
         child: [],
         addPath: []
     },
@@ -38,7 +38,7 @@ const sideMenus: Array<SIDE_MENU_TYPE> = [
     //     name: "Home",
     //     icon: "vcard",
     //     id: 300,
-    //     component: Board,
+    //     component: Flyer,
     //     child: [],
     //     addPath: [':bType', ':bType/:bId']
     // },

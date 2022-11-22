@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from "react-router-dom";
 import { useLogin } from 'hooks/useLogin';
-import { useRecoilValue } from 'recoil';
-import { loginState } from 'state';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { loginState, userInfo } from 'state';
 import SideMenubar from 'pages/common/sideMenubar';
 
 const Layout: React.FC = () => {
@@ -10,6 +10,11 @@ const Layout: React.FC = () => {
     const loginInfo = useRecoilValue(loginState)
     const { login, chkToken, getToken, removeToken } = useLogin()
 
+    const setUserInfo = useSetRecoilState(userInfo);
+    const userId = sessionStorage.getItem("userId");
+    useEffect(() => {
+      if(userId) setUserInfo(userId);
+    }, [userId, setUserInfo]);
     // 새로고침 로그인 처리.
     const loginCheck = async () => {
         if (!loginInfo.isLogin) {
