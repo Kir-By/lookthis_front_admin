@@ -38,8 +38,8 @@ const Item: FC<{ flyer: any }> = ({ flyer }) => {
   const navigation = useNavigate();
   console.log('flyer', flyer)
   return (
-    <div style={{ padding: "20px", width: "18%" }} onClick={() => navigation(`/detail/${flyer.storeId}`)}>
-      <img src={`https://lookthis.s3.ap-northeast-2.amazonaws.com/flyer/image${flyer.path}`} alt="" />
+    <div style={{ padding: "20px", maxWidth: "18%" }} onClick={() => navigation(`/detail/${flyer.storeId}`)}>
+      <img src={`https://lookthis.s3.ap-northeast-2.amazonaws.com/flyer/image${flyer.path}`} alt="" style={{width:'100%'}} />
       <p style={{ fontSize: "20px" }}>{flyer.storeName}</p>
     </div>
   );
