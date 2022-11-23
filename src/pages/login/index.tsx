@@ -19,7 +19,8 @@ const Login: React.FC = () => {
     if(jwtToken) {
         const useInfo:any = jwt_decode(jwtToken);
         sessionStorage.setItem('userId', useInfo.userId);
-        setUserInfo(useInfo.userId);
+        sessionStorage.setItem('jwt', jwtToken);
+        setUserInfo({ userId: useInfo.userId, jwt: jwtToken });
         navigation('/list');
     }
     

@@ -30,12 +30,14 @@ const franState = atom<number>({
     default : 0
 })
 
-const userInfo = atom<any>({
+const userInfo = atom<{userId:string, jwt:string}>({
     key: 'userInfo',
     default : {
         userId:'',
+        jwt:'',
     }
 })
+type UserInfo = {userId:string, jwt:string};
 
 export { loginState, franState, userInfo }
-export type { LoginAuthType }
+export type { LoginAuthType, UserInfo }

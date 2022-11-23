@@ -3,12 +3,13 @@ import axios from 'axios'
 import { RES_DATA_TYPE } from 'types/dataType'
 
 export default class Axios {
-    static get = (url, params, axiosConfig) => {
-        if (axiosConfig === null || typeof axiosConfig === 'undefined') {
+    static get = (url, params, axiosConfig, jwt) => {
+        if (axiosConfig === null || axiosConfig === '' || typeof axiosConfig === 'undefined') {
             axiosConfig = {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json; charset=UTF-8',
+                    Authorization: 'Bearer ' + jwt,
                 },
                 params,
             }
@@ -18,12 +19,13 @@ export default class Axios {
         })
     }
 
-    static post = (url, params, axiosConfig) => {
-        if (axiosConfig === null || typeof axiosConfig === 'undefined') {
+    static post = (url, params, axiosConfig, jwt) => {
+        if (axiosConfig === null || axiosConfig === '' || typeof axiosConfig === 'undefined') {
             axiosConfig = {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json; charset=UTF-8',
+                    Authorization: 'Bearer ' + jwt,
                 },
             }
         }
@@ -32,12 +34,14 @@ export default class Axios {
         })
     }
     
-    static put = (url, params, axiosConfig) => {
-        if (axiosConfig === null || typeof axiosConfig === 'undefined') {
+    static put = (url, params, axiosConfig, jwt) => {
+        console.log('jwt',jwt)
+        if (axiosConfig === null || axiosConfig === '' || typeof axiosConfig === 'undefined') {
             axiosConfig = {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json; charset=UTF-8',
+                    Authorization: 'Bearer ' + jwt,
                 },
             }
         }

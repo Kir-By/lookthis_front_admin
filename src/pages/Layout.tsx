@@ -12,9 +12,10 @@ const Layout: React.FC = () => {
 
     const setUserInfo = useSetRecoilState(userInfo);
     const userId = sessionStorage.getItem("userId");
+    const jwt = sessionStorage.getItem("jwt");
     useEffect(() => {
-      if(userId) setUserInfo(userId);
-    }, [userId, setUserInfo]);
+      if(userId && jwt) setUserInfo({userId, jwt});
+    }, [userId, jwt, setUserInfo]);
     // 새로고침 로그인 처리.
     const loginCheck = async () => {
         if (!loginInfo.isLogin) {

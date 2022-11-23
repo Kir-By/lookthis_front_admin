@@ -51,8 +51,8 @@ const FlyerListContainer: FC = () => {
           <div className="contents">
             <div className="tab-wrap" style={{ border: "0px" }}>
               {
-                Object.values(BOARD_STATUS_INFO[status]).map(item => (
-                  <><button className={item.className} onClick={item.onClickFn}>{item.btnTitle}</button>&nbsp;&nbsp;</>
+                Object.values(BOARD_STATUS_INFO[status]).map((item, index) => (
+                  <><button key={index} className={item.className} onClick={item.onClickFn}>{item.btnTitle}</button>&nbsp;&nbsp;</>
                 ))
               }
             </div>

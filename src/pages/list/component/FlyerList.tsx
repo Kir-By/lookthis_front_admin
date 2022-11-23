@@ -4,23 +4,22 @@ import React, { FC, useEffect, useState } from "react";
 import Pagination from "pages/common/pagination";
 import Flyer from "./Flyer";
 import Axios from "utils/Axios";
-import { userInfo } from "state";
+import { UserInfo, userInfo } from "state";
 import { useRecoilValue } from "recoil";
 
 const FlyerList: FC = () => {
   
-  const userId = useRecoilValue(userInfo);
-  console.log(userId);
+  const user:UserInfo = useRecoilValue(userInfo);
   const [storeFlyers, setStoreFlyers] = useState<any[]>([]);
 
   useEffect(() => {
 
-    if(!userId) return;
+    if(!user.userId) return;
 
     const getStoreList = async () => {
       const storeList: any[] = await Axios.post(
-        "https://lookthis-back.nhncloud.paas-ta.com/getStoreList",
-        JSON.stringify({ userId })
+        "https://lookthis-back.nhncloud.paas-ta.com/store/getStoreList",
+        JSON.stringify({ userId:user.userId }),'', user.jwt
       );
       console.log("storeList", storeList);
 
@@ -28,8 +27,8 @@ const FlyerList: FC = () => {
         (arr, curStore) => {
           arr[0].push(
             Axios.post(
-              "https://lookthis-back.nhncloud.paas-ta.com/getStoreFlyerList",
-              JSON.stringify({ storeId: curStore.storeId })
+              "https://lookthis-back.nhncloud.paas-ta.com/store/getStoreFlyerList",
+              JSON.stringify({ storeId: curStore.storeId }),'', user.jwt
             )
           );
           arr[1].push({
@@ -45,25 +44,31 @@ const FlyerList: FC = () => {
       );
 
       // console.log("getflyerAxios", getflyerAxios);
-      //   console.log('storeFlyers', storeFlyers);
+      // console.log('storeFlyers', storeFlyers);
 
       const flyerList = await Promise.all(getflyerAxios);
       console.log("flyerList", flyerList);
-      flyerList.reduce((arr, cur, index) => {
-        console.log('cur.path', cur[0].path, cur);
-        arr[index].path =
-          cur[0].path ||
-          "https://image.utoimage.com/preview/cp864374/2022/09/202209000321_206.jpg";
+      const [getFlyerSpotListAxios] = flyerList.reduce((arr, cur, index) => {
+        arr[0].push(
+          Axios.post(
+            "https://lookthis-back.nhncloud.paas-ta.com/store/getFlyerSpotList",
+            JSON.stringify({ storeId: storeList[index].storeId }),'', user.jwt
+          )
+        );
+        arr[1][index].path = cur[0]?.path || '';
         return arr;
-      }, storeFlyers);
-
+      }, [[], storeFlyers]);
       console.log("storeFlyers", storeFlyers);
+      
+      const flyerSpotList = await Promise.all(getFlyerSpotListAxios);
+      console.log('flyerSpotList', flyerSpotList);
+      
       setStoreFlyers(prev => storeFlyers);
       setPageInfo(prev => ({...prev, dataCnt: storeFlyers.length}));
     };
 
     getStoreList();
-  }, [userId]);
+  }, [user]);
 
   const [pageInfo, setPageInfo] = useState({
     dataCnt: 0,
@@ -74,8 +79,6 @@ const FlyerList: FC = () => {
   return (
     <>
       <table className="board-wrap board-top" cellPadding="0" cellSpacing="0">
-        {/* Column Width */}
-        {/* <colgroup>{width.map((wd, index) => <col width={wd} key={index} />)}</colgroup> */}
         <tbody>
           <Flyer flyerList={storeFlyers} />
         </tbody>
