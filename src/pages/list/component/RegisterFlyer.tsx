@@ -51,6 +51,8 @@ const RegisterFlyer: FC = () => {
   const [searchCondition, setSearchCondition] = useState("");
   // 광고 등록할 장소 Id
   const [spotId, setSpotId] = useState(0);
+  // 업데이트 시 사용할 이전 광고 등록 장소 Id
+  const [lastSpotId, setLastSpotId] = useState(0);
   // 첨부파일(광고 이미지) 정보
   const [file, setFile] = useState<any>(null);
 
@@ -73,6 +75,7 @@ const RegisterFlyer: FC = () => {
       const [store, flyer, spot] = await getDetail(user, storeId as string, flyerId  as string);
       const {address, lat, lng, storeId:sId, storeName} = store;
       setStoreInfo((prev: any) => ({ ...prev, storeName, address, storePositon: new naver.maps.LatLng(Number(lat), Number(lng)), storeId:sId,  }));
+      setLastSpotId(spot.spotId)
       movoSelectSpot(spot.lat + ' ' + spot.lng + ' ' + spot.spotId);
     };
 
@@ -152,7 +155,7 @@ const RegisterFlyer: FC = () => {
       const flyerIdRes = isFlyerUpdate ? flyerId : await saveFlyer(storeId);
 
       // Step 3. 광고 위치
-      flyerId && await deleteFlyerSpot(spotId, Number(flyerId));
+      flyerId && await deleteFlyerSpot(lastSpotId, Number(flyerId));
       await saveFlyerSpot(flyerIdRes);
 
       alert("등록완료!");
