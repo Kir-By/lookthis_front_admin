@@ -35,7 +35,6 @@ export default class Axios {
     }
     
     static put = (url, params, axiosConfig, jwt) => {
-        console.log('jwt',jwt)
         if (axiosConfig === null || axiosConfig === '' || typeof axiosConfig === 'undefined') {
             axiosConfig = {
                 headers: {
@@ -46,6 +45,22 @@ export default class Axios {
             }
         }
         return axios.put(url, params, axiosConfig).then(function (json) {
+            return json.data
+        })
+    }
+    static delete = (url, params, axiosConfig, jwt) => {
+        console.log('jwt', params);
+        if (axiosConfig === null || axiosConfig === '' || typeof axiosConfig === 'undefined') {
+            axiosConfig = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json; charset=UTF-8',
+                    Authorization: 'Bearer ' + jwt,
+                },
+            }
+        }
+        console.log('axiosConfig', axiosConfig.headers);
+        return axios.delete(url, params, axiosConfig).then(function (json) {
             return json.data
         })
     }

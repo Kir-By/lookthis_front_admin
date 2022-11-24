@@ -2,15 +2,15 @@ import React, { FC, useEffect, useState } from "react";
 
 // Component
 import Pagination from "pages/common/pagination";
-import Flyer from "./Flyer";
+import FlyerTableList from "./FlyerTableList";
 import Axios from "utils/Axios";
 import { UserInfo, userInfo } from "state";
 import { useRecoilValue } from "recoil";
 
 const FlyerList: FC = () => {
   
-  const user:UserInfo = useRecoilValue(userInfo);
-  const [storeFlyers, setStoreFlyers] = useState<any[]>([]);
+  const user:UserInfo = useRecoilValue(userInfo)
+  const [storeInfos, setStoreInfos] = useState<any[]>([]);
 
   useEffect(() => {
 
@@ -23,7 +23,7 @@ const FlyerList: FC = () => {
       );
       console.log("storeList", storeList);
 
-      const [getflyerAxios, storeFlyers]: [any[], any[]] = storeList.reduce(
+      const [getflyerAxios, storeInfos]: [any[], any[]] = storeList.reduce(
         (arr, curStore) => {
           arr[0].push(
             Axios.post(
@@ -44,7 +44,7 @@ const FlyerList: FC = () => {
       );
 
       // console.log("getflyerAxios", getflyerAxios);
-      // console.log('storeFlyers', storeFlyers);
+      // console.log('storeInfos', storeInfos);
 
       const flyerList = await Promise.all(getflyerAxios);
       console.log("flyerList", flyerList);
@@ -52,19 +52,22 @@ const FlyerList: FC = () => {
         arr[0].push(
           Axios.post(
             "https://lookthis-back.nhncloud.paas-ta.com/store/getFlyerSpotList",
-            JSON.stringify({ storeId: storeList[index].storeId }),'', user.jwt
+            JSON.stringify({ flyerId: cur[0]?.flyerId }), '', user.jwt
           )
         );
         arr[1][index].path = cur[0]?.path || '';
+        arr[1][index].flyerId = cur[0]?.flyerId || '';
         return arr;
-      }, [[], storeFlyers]);
-      console.log("storeFlyers", storeFlyers);
+      }, [[], storeInfos]);
+      console.log("storeInfos", storeInfos);
       
       const flyerSpotList = await Promise.all(getFlyerSpotListAxios);
       console.log('flyerSpotList', flyerSpotList);
+
+      // flyerSpotList.forEach(spotInfo => storeInfos.)
       
-      setStoreFlyers(prev => storeFlyers);
-      setPageInfo(prev => ({...prev, dataCnt: storeFlyers.length}));
+      setStoreInfos(prev => storeInfos);
+      setPageInfo(prev => ({...prev, dataCnt: storeInfos.length}));
     };
 
     getStoreList();
@@ -80,7 +83,7 @@ const FlyerList: FC = () => {
     <>
       <table className="board-wrap board-top" cellPadding="0" cellSpacing="0">
         <tbody>
-          <Flyer flyerList={storeFlyers} />
+          <FlyerTableList storeInfos={storeInfos} />
         </tbody>
       </table>
       <TableBottom pageInfo={pageInfo} setPageInfo={setPageInfo} />

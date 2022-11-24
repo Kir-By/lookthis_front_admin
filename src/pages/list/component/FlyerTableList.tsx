@@ -2,8 +2,8 @@ import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-interface FlyerProps {
-  flyerList: any[];
+interface FlyerTableListProps {
+  storeInfos: any[];
 }
 
 const Td = styled.td`
@@ -14,13 +14,13 @@ font-size: 25;
   background: #fff;
 `;
 
-const Flyer: FC<FlyerProps> = ({ flyerList = [] }) => {
+const FlyerTableList: FC<FlyerTableListProps> = ({ storeInfos = [] }) => {
   return (
     <tr>
       <Td>
         <div style={{ display: "flex", padding: "30px", flexWrap: "wrap" }}>
-          {flyerList &&
-            flyerList.map((flyer: any, index) => {
+          {storeInfos &&
+            storeInfos.map((flyer: any, index) => {
               return (
                 <Item key={index} flyer={flyer} />
               );
@@ -31,16 +31,16 @@ const Flyer: FC<FlyerProps> = ({ flyerList = [] }) => {
   );
 };
 
-export default Flyer;
+export default FlyerTableList;
 
 const Item: FC<{ flyer: any }> = ({ flyer }) => {
 
   const navigation = useNavigate();
-  console.log('flyer', flyer)
+  // console.log('flyer', flyer)
   return (
     <>
     {flyer.path &&
-      <div style={{ padding: "20px", maxWidth: "18%", minWidth: "18%" }} onClick={() => navigation(`/detail/${flyer.storeId}`)}>
+      <div style={{ padding: "20px", maxWidth: "18%", minWidth: "18%" }} onClick={() => navigation(`/detail/${flyer.storeId}/${flyer.flyerId}`)}>
       <img src={`https://lookthis.s3.ap-northeast-2.amazonaws.com/flyer/image${flyer.path}`} alt="" style={{width:'100%'}} />
       <p style={{ fontSize: "20px" }}>{flyer.storeName}</p>
     </div>

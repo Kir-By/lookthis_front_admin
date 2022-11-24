@@ -21,27 +21,31 @@ import Utils from "utils/Utils";
 import FilesUpload from "./FilesUpload";
 import { UserInfo, userInfo } from "state";
 import { useRecoilValue } from "recoil";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getDetail } from "service/FlyerService";
 
 const RegisterFlyer: FC = () => {
 
+  const { storeId, flyerId } = useParams();
   // 유저 Id
-  const user:UserInfo = useRecoilValue(userInfo);
+  const user: UserInfo = useRecoilValue(userInfo);
   // 네이버 지도
   // const [loading, error] = useScript("https://unpkg.com/lodash");
   const [loading, error] = useScript(
     "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=my4y6x6w9j&submodules=geocoder"
   );
+  const { naver } = window;
   // 지도 center 위치
   const [curLocation, setCurLocation] = useState<naver.maps.LatLng | null>(
     null
   );
   // 가게 정보
   const [storeInfo, setStoreInfo] = useState({
-      storeName: "",
-      address: "",
-      storePositon: null as any,
-    });
+    storeName: "",
+    address: "",
+    storePositon: null as any,
+  });
+  console.log('storeInfo', storeInfo);
   // 광고 등록 가능한 장소 리스트
   const [spotList, setSpotList] = useState<any[]>([]);
   // 광고 등록장소 필터값 입력
@@ -53,16 +57,28 @@ const RegisterFlyer: FC = () => {
 
   // 로딩 시 광고 등록장소 리스트 가져오기
   useEffect(() => {
-      const getSpotList = async () => {
-        const spotResult = (await Axios.post(
-          "https://lookthis-back.nhncloud.paas-ta.com/spot/getSpotList",
-          {}, '',user.jwt
-        )) as any[];
-        setSpotList((prev) => spotResult);
-      };
-  
-      getSpotList();
-    }, []);
+    const getSpotList = async () => {
+      const spotResult = (await Axios.post(
+        "https://lookthis-back.nhncloud.paas-ta.com/spot/getSpotList",
+        {}, '', user.jwt
+      )) as any[];
+      setSpotList((prev) => spotResult);
+    };
+
+    getSpotList();
+  }, []);
+ 
+  // 광고 등록 정보 업데이트 시
+  useEffect(() => {
+    const getDetailInfo = async () => {
+      const [store, flyer, spot] = await getDetail(user, storeId as string, flyerId  as string);
+      const {address, lat, lng, storeId:sId, storeName} = store;
+      setStoreInfo((prev: any) => ({ ...prev, storeName, address, storePositon: new naver.maps.LatLng(Number(lat), Number(lng)), storeId:sId,  }));
+      movoSelectSpot(spot.lat + ' ' + spot.lng + ' ' + spot.spotId);
+    };
+
+    naver && getDetailInfo();
+  },[naver]);
 
   // 주소검색해서 위도, 경도 가져오기
   const getSearchAddressCoordinate = () => {
@@ -119,153 +135,182 @@ const RegisterFlyer: FC = () => {
     if (!latLng) return;
     const [lat, lng, spotId] = latLng.split(" ");
     setSpotId(Number(spotId));
-    setSelectSpot(lat + " " + lng);
+    setSelectSpot(lat + " " + lng + " " + spotId);
     setCurLocation(new naver.maps.LatLng(Number(lat), Number(lng)));
   };
 
   // 업체 광고 등록
   const navigation = useNavigate();
   const registerStore = async () => {
-      
+
     console.log('storeInfo', storeInfo);
-    if(Object.values(storeInfo).filter(item => !item).length > 0) return alert('가게 정보를 입력하세요');
-    
+    if (Object.values(storeInfo).filter(item => !item).length > 0) return alert('가게 정보를 입력하세요');
+
     try {
+      // Step 1. 가게 정보 저장
       const storeId = await saveStore();
-      const flyerId = await saveFlyer(storeId);
-      await saveFlyerSpot(flyerId);
-      alert("등록완료!");  
-      navigation(`/detail/${storeId}`);
+      // file이 null이고, flyerId 있으면 기존 flyerId 사용
+      
+      // Step 2. 광고 이미지 저장 (경우에 따라 저장X)
+      const isFlyerUpdate = (!!!file && flyerId) ;
+      const flyerIdRes = isFlyerUpdate ? flyerId : await saveFlyer(storeId);
+
+      // Step 3. 광고 위치
+      flyerId && await deleteFlyerSpot(spotId, Number(flyerId));
+      await saveFlyerSpot(flyerIdRes);
+
+      alert("등록완료!");
+      navigation(`/detail/${storeId}/${flyerIdRes}`);
     }
     catch (error) {
       console.log(error);
       alert("에러발생!!!")
     };
-    
+
   };
 
   // 업체 등록
   const saveStore = async () => {
 
-    const saveStoreParams = {
-      userId:user.userId,
+    const saveStoreParams:any = {
+      userId: user.userId,
       address: storeInfo.address, // 가게 위치
       lat: Number(storeInfo.storePositon.y), // 가게 lat
       lng: Number(storeInfo.storePositon.x), // 가게 lng
       storeName: storeInfo.storeName, // 가게 이름
     };
+    if(storeId) saveStoreParams['storeId'] = storeId;
 
     const res = await Axios.put(
       "https://lookthis-back.nhncloud.paas-ta.com/store/saveStore",
-      JSON.stringify(saveStoreParams),'',user.jwt
+      JSON.stringify(saveStoreParams), '', user.jwt
     );
 
     return res;
   };
 
   // 광고 이미지 등록
-  const saveFlyer = async (storeId:number) => {
-      const formData = new FormData();
-      formData.append('storeId', storeId.toString());
-      formData.append('flyerFile', file[0]);
-      console.log('formData', formData);
-      const res = await Axios.put('https://lookthis-back.nhncloud.paas-ta.com/store/saveFlyer', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json; charset=UTF-8',
-            Authorization: 'Bearer ' + user.jwt,
-        },
-      });
-      console.log('flyerId', res);
-      return res;
+  const saveFlyer = async (storeId: number) => {
+    const formData = new FormData();
+    formData.append('storeId', storeId.toString());
+    formData.append('flyerFile', file[0]);
+    console.log('formData', formData);
+    const res = await Axios.put('https://lookthis-back.nhncloud.paas-ta.com/store/saveFlyer', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json; charset=UTF-8',
+        Authorization: 'Bearer ' + user.jwt,
+      },
+    });
+    console.log('flyerId', res);
+    return res;
   };
 
   // 광고 보여줄 장소 등록
   const saveFlyerSpot = async (flyerId: number) => {
-    console.log(spotId);
     await Axios.put(
       "https://lookthis-back.nhncloud.paas-ta.com/store/insertFlyerSpot",
-      JSON.stringify({ spotId, flyerId }), '',user.jwt
+      JSON.stringify({ spotId, flyerId }), '', user.jwt
+    );
+  };
+
+  // 광고 보여줄 장소 삭제
+  const deleteFlyerSpot = async (spotId:number, flyerId: number) => {
+
+    const axiosConfig = {
+      headers: {
+          // 'Content-Type': 'application/json',
+          // Accept: 'application/json; charset=UTF-8',
+          Authorization: 'Bearer ' + user.jwt,
+      },
+    };
+    await Axios.post(
+      "https://lookthis-back.nhncloud.paas-ta.com/store/deleteFlyerSpot",
+      JSON.stringify({ spotId, flyerId }), '', user.jwt
     );
   };
 
   return (
     <>
-          <div className="view-wrap">
-            {/* <!-- 카테고리, 날짜 --> */}
-            <div className="record-wrap">
-              <p className="sort-state">등록일자</p>
-              <p className="date">{Utils.converDateFormat(new Date(), "-")}</p>
-            </div>
-            {/* <!-- 상태, 제목 --> */}
-            <InfoInput
-              inputName="storeName"
-              inputValue={storeInfo.storeName}
-              placeholder="가게 이름을 입력하세요"
-              title="가게 이름"
-              setFn={handleStoreInfo}
-            />
-            <InfoInput
-              inputName="address"
-              inputValue={storeInfo.address}
-              placeholder="가게 주소을 입력하세요"
-              title="가게 주소"
-              setFn={handleStoreInfo}
+      <div className="view-wrap">
+        {/* <!-- 카테고리, 날짜 --> */}
+        <div className="record-wrap">
+          <p className="sort-state">등록일자</p>
+          <p className="date">{Utils.converDateFormat(new Date(), "-")}</p>
+        </div>
+        {/* <!-- 상태, 제목 --> */}
+        <div style={{marginTop: '30px'}}>
+          <InfoInput
+            inputName="storeName"
+            inputValue={storeInfo.storeName}
+            placeholder="가게 이름을 입력하세요"
+            title="가게 이름"
+            setFn={handleStoreInfo}
+          />
+        </div>
+        <div style={{marginTop: '30px'}}>
+          <InfoInput
+            inputName="address"
+            inputValue={storeInfo.address}
+            placeholder="가게 주소을 입력하세요"
+            title="가게 주소"
+            setFn={handleStoreInfo}
+          >
+            &nbsp;&nbsp;
+            <button className="registerBtn"
+              onClick={getSearchAddressCoordinate}
             >
-              &nbsp;&nbsp;
-              <button className="registerBtn"
-                onClick={getSearchAddressCoordinate}
-              >
-                검 색
-              </button>
-            </InfoInput>
-            <div style={{padding: '0px 20px 0px'}}><Map curLocation={storeInfo.storePositon} /></div>
-            {/* <!-- 내용 --> */}
-            <div className="content-wrap">
-              <span className="registerSpan">광고 위치 선택</span>&nbsp;&nbsp;
-              {/* <span></span> */}
-              <select
-              className="registerSelect"
-                value={selectSpot}
-                onChange={(e) => movoSelectSpot(e.target.value)}
-              >
-                <option value={""}>위치를 선택하세요</option>
-                {spotList.map((spot: any, index: number) => (
-                  <option key={index} value={spot.lat + " " + spot.lng + " " + spot.spotId}>
-                    {spot.station + " " + spot.stationExit + "번 출구"}
-                  </option>
-                ))}
-                {/* <option>TEST</option> */}
-              </select>
-              &nbsp;&nbsp;
-              <input
-                className="storeInfo"
-                placeholder="원하는 위치를 검색하세요"
-                value={searchCondition}
-                onChange={(e) => setSearchCondition((prev) => e.target.value)}
-              />
-              &nbsp;&nbsp;
-              <button className="registerBtn" onClick={searchSpot}>검 색</button>
-              {/* <div
+              검 색
+            </button>
+          </InfoInput>
+        </div>
+        <div style={{ padding: '0px 20px 0px' }}><Map curLocation={storeInfo.storePositon} /></div>
+        {/* <!-- 내용 --> */}
+        <div className="content-wrap">
+          <span className="registerSpan">광고 위치 선택</span>&nbsp;&nbsp;
+          {/* <span></span> */}
+          <select
+            className="registerSelect"
+            value={selectSpot}
+            onChange={(e) => movoSelectSpot(e.target.value)}
+          >
+            <option value={""}>위치를 선택하세요</option>
+            {spotList.map((spot: any, index: number) => (
+              <option key={index} value={spot.lat + " " + spot.lng + " " + spot.spotId}>
+                {spot.station + " " + spot.stationExit + "번 출구"}
+              </option>
+            ))}
+            {/* <option>TEST</option> */}
+          </select>
+          &nbsp;&nbsp;
+          <input
+            className="storeInfo"
+            placeholder="원하는 위치를 검색하세요"
+            value={searchCondition}
+            onChange={(e) => setSearchCondition((prev) => e.target.value)}
+          />
+          &nbsp;&nbsp;
+          <button className="registerBtn" onClick={searchSpot}>검 색</button>
+          {/* <div
                 ref={mapElement}
                 style={{ minHeight: "400px", marginTop: "10px" }}
               /> */}
-              <Map curLocation={curLocation} />
-            </div>
-            <div className="file-wrap">
-              이미지 등록
-              <FilesUpload file={file} setFile={setFile} />
-            </div>
-            {/* <Content contentsUrl={contents} /> */}
-            {/* <!-- 파일첨부 --> */}
-            {/* {<FileList boardId={boardId} />} */}
-          </div>
-          <div className="btn-wrap">
-            <button className="btn-list-more" onClick={registerStore} style={{background: 'rgb(241,101,138)'}}>
-              등 록
-            </button>
-          </div>
-        </>
+          <Map curLocation={curLocation} />
+        </div>
+        <div className="file-wrap">
+          광고 이미지 등록 {storeId && flyerId && ('(이미지를 등록하지 않으면 기존 이미지를 사용합니다.)')}
+          <FilesUpload file={file} setFile={setFile} />
+        </div>
+        {/* <Content contentsUrl={contents} /> */}
+        {/* <!-- 파일첨부 --> */}
+        {/* {<FileList boardId={boardId} />} */}
+      </div>
+      <div className="btn-wrap">
+        <button className="btn-list-more" onClick={registerStore} style={{ background: 'rgb(241,101,138)' }}>
+          등 록
+        </button>
+      </div>
+    </>
   );
 };
 
@@ -316,33 +361,33 @@ const Map: FC<MapProps> = ({ curLocation }) => {
 
   // 주소검색해서 위도, 경도 가져오기
   // const getSearchAddressCoordinate = (address:string) => {
-//   const getSearchAddressCoordinate = () => {
-//     naver.maps.Service.geocode(
-//       { query: "test" },
-//       (status: any, response: any) => {
-//         if (status === naver.maps.Service.Status.ERROR) {
-//           return alert("Something Wrong!");
-//         }
-//         if (response.v2.meta.totalCount === 0) {
-//           return alert("해당 장소가 등록되지 않았습니다.");
-//         }
-//         var htmlAddresses = [],
-//           item = response.v2.addresses[0],
-//           point = new naver.maps.Point(item.x, item.y);
-//         if (item.roadAddress) {
-//           htmlAddresses.push("[도로명 주소] " + item.roadAddress);
-//         }
-//         if (item.jibunAddress) {
-//           htmlAddresses.push("[지번 주소] " + item.jibunAddress);
-//         }
-//         if (item.englishAddress) {
-//           htmlAddresses.push("[영문명 주소] " + item.englishAddress);
-//         }
+  //   const getSearchAddressCoordinate = () => {
+  //     naver.maps.Service.geocode(
+  //       { query: "test" },
+  //       (status: any, response: any) => {
+  //         if (status === naver.maps.Service.Status.ERROR) {
+  //           return alert("Something Wrong!");
+  //         }
+  //         if (response.v2.meta.totalCount === 0) {
+  //           return alert("해당 장소가 등록되지 않았습니다.");
+  //         }
+  //         var htmlAddresses = [],
+  //           item = response.v2.addresses[0],
+  //           point = new naver.maps.Point(item.x, item.y);
+  //         if (item.roadAddress) {
+  //           htmlAddresses.push("[도로명 주소] " + item.roadAddress);
+  //         }
+  //         if (item.jibunAddress) {
+  //           htmlAddresses.push("[지번 주소] " + item.jibunAddress);
+  //         }
+  //         if (item.englishAddress) {
+  //           htmlAddresses.push("[영문명 주소] " + item.englishAddress);
+  //         }
 
-//         // setCurLocation(new naver.maps.LatLng(item.y, item.x));
-//       }
-//     );
-//   };
+  //         // setCurLocation(new naver.maps.LatLng(item.y, item.x));
+  //       }
+  //     );
+  //   };
 
   return (
     <div

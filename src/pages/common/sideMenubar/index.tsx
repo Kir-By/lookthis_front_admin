@@ -5,8 +5,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { useLogin } from 'hooks/useLogin';
 import { franState, loginState } from 'state';
 
-import img_logo from 'assets/images/common/logo.svg';
-
+import logo from 'assets/images/common/lookthis2.png'
 type SideMenuBarType = {
     index : number,
     subIndex : number,
@@ -104,25 +103,10 @@ const SideMenubar:React.FC = () => {
         setFranCode(franCodeNum)
     }, [setFranCode])
 
-    console.log("SIDE MENU BAR RENDER!!", loginInfo, ' 선택매장 : ', franCode)
     return(
         <nav>
-            <img className="logo" src={img_logo} alt="banapresso" style={{opacity:0}} />
-            {/* <div className="user">
-                <p><span className="name">{localStorage.getItem("userNm")}</span>님</p>
-                <p>안녕하세요.</p>
-            </div>
-            <div className="select-spot">
-                <select name="spot" onChange={handleChargeFranCode}>
-                    { 
-                        loginInfo.userInfo.f_list.map((data:any, key:number) => 
-                            <option key={key} value={data.f_code}>{data.f_code_name}</option>
-                        )
-                    }
-                </select>
-            </div> */}
+            <img className="logo" src={logo} alt="" style={{width:146}} />
             <SideMenu activeMenu={activeMenu} sideMenus={sideMenus} setActiveMenu={setActiveMenu}/>
-
             {/* 로그아웃 */}
             <div className="user-function">
                 <p><Link to={'#'} onClick={handleLogOut}>로그아웃</Link></p>

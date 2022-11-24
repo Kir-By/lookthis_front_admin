@@ -29,9 +29,11 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Navigate replace to="/index" />} />
           <Route path="/list" element={<FlyerList />} />
-          <Route path="/register" element={<FlyerList />} />
+          <Route path="/register" element={<FlyerList />} >
+            <Route path=":storeId/:flyerId" element={null} />
+          </Route>
           <Route path="/detail" element={<FlyerList />}>
-            <Route path=":id" element={null} />
+            <Route path=":storeId/:flyerId" element={null} />
           </Route>
           <Route path="/update" element={<FlyerList />}>
             <Route path=":id" element={null} />

@@ -10,91 +10,44 @@ import "assets/sass/notice_view.scss";
 // Type
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { userInfo } from "state";
+import { UserInfo, userInfo } from "state";
+import { getDetail } from "service/FlyerService";
 
 const FlyerDetail: FC = () => {
-  const { id } = useParams();
-  const [store, setStore] = useState<any>({});
 
-  const userId = useRecoilValue(userInfo);
+  const { storeId, flyerId } = useParams();
+  const [detailInfo, setDetailInfo] = useState<any>({});
 
-  useEffect(() => {
-    const getStore = async () => {
-      const storeList: any[] = await Axios.post(
-        "https://lookthis-back.nhncloud.paas-ta.com/getStoreList",
-        JSON.stringify({ userId })
-      );
+  const user:UserInfo = useRecoilValue(userInfo);
 
-      const store = storeList.filter(
-        (store) => store.storeId === Number(id)
-      )[0];
-      console.log("store", store);
-
-      const flyer = await Axios.post(
-        "https://lookthis-back.nhncloud.paas-ta.com/getStoreFlyerList",
-        JSON.stringify({ storeId: store.storeId })
-      );
-      console.log("flyer", flyer);
-
-      // console.log("getflyerAxios", getflyerAxios);
-      //   console.log('storeFlyers', storeFlyers);
-
-      // const flyerList = await Promise.all(getflyerAxios);
-      // console.log("flyerList", flyerList);
-      // flyerList.reduce((arr, cur, index) => {
-      //   arr[index].path =
-      //     cur?.path ||
-      //     "https://image.utoimage.com/preview/cp864374/2022/09/202209000321_206.jpg";
-      //   return arr;
-      // }, storeFlyers);
-
-      setStore((prev: any) => ({ ...prev, ...store, ...flyer }));
-    };
-
-    getStore();
-  }, []);
-
+  
   // 네이버 지도
   // const [loading, error] = useScript("https://unpkg.com/lodash");
   const [loading, error] = useScript(
     "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=my4y6x6w9j&submodules=geocoder"
   );
   const { naver } = window;
+  
+  useEffect(() => {
+    const getDetailInfo = async () => {
+      const [store, flyer, spot] = await getDetail(user, storeId as string, flyerId  as string);
+      const {address, lat, lng, storeName} = store;
+      console.log(lat, lng);
+      setStoreInfo((prev: any) => ({ ...prev, storeName, address, storePositon: new naver.maps.LatLng(Number(lat), Number(lng)) }));
+      setDetailInfo((prev: any) => ({ ...prev, ...store, ...flyer, spotId:spot.spotId, spotLat:spot.lat, spotLng:spot.lng }));
+      setSelectSpot((prev: any) => spot.station + ' ' + spot.stationExit + '번 출구');
+      movoSelectSpot(spot.lat + ' ' + spot.lng);
+    };
 
+    naver && getDetailInfo();
+
+  }, [naver]);
+  console.log('detailInfo', detailInfo);
+
+  // 광고 위치
   const [curLocation, setCurLocation] = useState<naver.maps.LatLng | null>(
     null
   );
-
-  // 주소검색해서 위도, 경도 가져오기
-  const getSearchAddressCoordinate = () => {
-    naver.maps.Service.geocode(
-      { query: storeInfo.address },
-      (status: any, response: any) => {
-        if (status === naver.maps.Service.Status.ERROR) {
-          return alert("Something Wrong!");
-        }
-        if (response.v2.meta.totalCount === 0) {
-          return alert("해당 장소가 등록되지 않았습니다.");
-        }
-        var htmlAddresses = [],
-          item = response.v2.addresses[0],
-          point = new naver.maps.Point(item.x, item.y);
-        if (item.roadAddress) {
-          htmlAddresses.push("[도로명 주소] " + item.roadAddress);
-        }
-        if (item.jibunAddress) {
-          htmlAddresses.push("[지번 주소] " + item.jibunAddress);
-        }
-        if (item.englishAddress) {
-          htmlAddresses.push("[영문명 주소] " + item.englishAddress);
-        }
-        setStoreInfo((prev) => ({
-          ...prev,
-          storePositon: new naver.maps.LatLng(item.y, item.x),
-        }));
-      }
-    );
-  };
 
   // 가게 정보
   const [storeInfo, setStoreInfo] = useState({
@@ -102,104 +55,53 @@ const FlyerDetail: FC = () => {
     address: "",
     storePositon: null as any,
   });
+  console.log('storeInfo', storeInfo);
 
-  // 가게 정보 입력
-  const handleStoreInfo = (key: string, value: string) => {
-    setStoreInfo((prev) => ({ ...prev, [key]: value }));
-  };
-
-  // 광고 등록장소 정보
-  const [spotList, setSpotList] = useState<any[]>([]);
-  // 로딩 시 광고 등록장소 리스트 가져오기
-  useEffect(() => {
-    const getSpotList = async () => {
-      const spotResult = (await Axios.post(
-        "https://lookthis-back.nhncloud.paas-ta.com/getSpotList",
-        {}
-      )) as any[];
-      setSpotList((prev) => spotResult);
-    };
-
-    getSpotList();
-  }, []);
-
-  // 광고 등록장소 필터값 입력
-  const [searchCondition, setSearchCondition] = useState("");
-  // 광고 등록장소 검색
-  const searchSpot = () => {
-    const reg = new RegExp(`(${searchCondition})`, "g");
-    const filterSpot = spotList.filter(
-      (item: any) => !searchCondition || item.station.match(reg)
-    );
-    setSpotList((prev) => filterSpot);
-    movoSelectSpot(filterSpot[0].lat + " " + filterSpot[0].lng);
-  };
-
-  // 선택한 광고 등록장소
+  // 선택한 광고 등록장소 이름
   const [selectSpot, setSelectSpot] = useState("");
   // 선택한 광고 등록장소로 지도 이동
   const movoSelectSpot = (latLng: string) => {
     if (!latLng) return;
     const [lat, lng] = latLng.split(" ");
-    setSelectSpot(lat + " " + lng);
     setCurLocation(new naver.maps.LatLng(Number(lat), Number(lng)));
-  };
-
-  // 가게 정보 등록
-  const registerStore = async () => {
-    if (Object.values(storeInfo).filter((item) => !item).length > 0)
-      return alert("가게 정보를 입력하세요");
-    const [lat, lng] = selectSpot.split(" ");
-    const params = {
-      userId: "nsw3",
-      address: storeInfo.address,
-      authStatus: 1,
-      authUser: "관리자",
-      lat: Number(lat),
-      lng: Number(lng),
-      storeName: storeInfo.storeName,
-    };
-    const res = await Axios.put(
-      "https://lookthis-back.nhncloud.paas-ta.com/saveStore",
-      JSON.stringify(params)
-    );
-    console.log(res);
-    alert("등록완료!");
   };
 
   return (
     <>
-      {naver && store && (
+      {naver && detailInfo && (
         <div className="view-wrap">
+          {/* <!-- 가게 등록 정보 --> */}
           <InfoInput
             inputName="storeName"
-            inputValue={store.storeName}
+            inputValue={storeInfo.storeName}
             title="가게 이름"
           />
+          <div style={{marginTop: '30px'}}>
           <InfoInput
             inputName="address"
-            inputValue={store.address}
+            inputValue={storeInfo.address}
             title="가게 주소"
           />
+          </div>
           <div style={{ padding: "0px 20px 0px" }}>
             <Map
-              curLocation={
-                new naver.maps.LatLng(Number(store.lat), Number(store.lng))
-              }
+              curLocation={storeInfo.storePositon}
             />
           </div>
-          {/* <!-- 내용 --> */}
-          <div className="content-wrap">
+          {/* <!-- 광고 등록 주소 --> */}
+          <div className="content-wrap" >
           <InfoInput
             inputName="spot"
-            inputValue={''}
+            inputValue={selectSpot}
             title="광고 등록 주소"
           />
             <Map curLocation={curLocation} />
           </div>
           <div className="file-wrap">
-            이미지 등록
-            {/* <FilesUpload /> */}
+            광고 이미지
+            <div style={{ padding: "20px", maxWidth: "18%", minWidth: "18%" }} >
+              <img src={`https://lookthis.s3.ap-northeast-2.amazonaws.com/flyer/image${detailInfo.path}`} alt="" style={{width:'100%'}} />
+           </div>
           </div>
           {/* <Content contentsUrl={contents} /> */}
           {/* <!-- 파일첨부 --> */}
@@ -217,6 +119,7 @@ interface MapProps {
 }
 // 네이버 지도
 const Map: FC<MapProps> = ({ curLocation }) => {
+  console.log('여기',curLocation);
   const { naver } = window;
   const [map, setMap] = useState<naver.maps.Map | null>(null);
   const [marker, setMarker] = useState<naver.maps.Marker | null>(null);
@@ -250,6 +153,7 @@ const Map: FC<MapProps> = ({ curLocation }) => {
   // 지도 위치 변경
   useEffect(() => {
     if (map && marker && curLocation) {
+      console.log('여어기');
       map.setCenter(curLocation);
       marker.setPosition(curLocation);
     }

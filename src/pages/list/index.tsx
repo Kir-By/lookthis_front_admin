@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 // component
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,12 +9,12 @@ const RegisterFlyer = loadable(() => import('pages/list/component/RegisterFlyer'
 
 const FlyerListContainer: FC = () => {
 
-  const { id } = useParams();
+  const { storeId, flyerId } = useParams();
   const BOARD_STATUS_INFO = {
     [BOARD_STATUS.LIST]: [{onClickFn:() => navigation('/register'), btnTitle:'등 록', className: "list_register_btn"}],
     [BOARD_STATUS.REGISTER]: [{onClickFn:() => navigation('/list'), btnTitle:'목 록', className: "list_list_btn"}],
-    [BOARD_STATUS.DETAIL]: [{onClickFn:() => navigation('/list'), btnTitle:'목 록', className: "list_list_btn" }, {onClickFn:() => navigation(`/update/${id}`), btnTitle:'수 정', className: "list_update_btn" }],
-    [BOARD_STATUS.UPDATE]: [{onClickFn:() => navigation(`/detail/${id}`), btnTitle:'취 소', className: "list_register_btn" }, {onClickFn:() => navigation(`/update/${id}`), btnTitle:'삭 제', className: "list_delete_btn" }],
+    [BOARD_STATUS.DETAIL]: [{onClickFn:() => navigation('/list'), btnTitle:'목 록', className: "list_list_btn" }, {onClickFn:() => navigation(`/register/${storeId}/${flyerId}`), btnTitle:'수 정', className: "list_update_btn" }],
+    [BOARD_STATUS.UPDATE]: [{onClickFn:() => navigation(`/detail/${storeId}/${flyerId}`), btnTitle:'취 소', className: "list_register_btn" }, {onClickFn:() => navigation(`/register/${storeId}/${flyerId}`), btnTitle:'삭 제', className: "list_delete_btn" }],
   } as const;
   type BoardStatus = typeof BOARD_STATUS[keyof typeof BOARD_STATUS];
   
@@ -52,7 +52,7 @@ const FlyerListContainer: FC = () => {
             <div className="tab-wrap" style={{ border: "0px" }}>
               {
                 Object.values(BOARD_STATUS_INFO[status]).map((item, index) => (
-                  <><button key={index} className={item.className} onClick={item.onClickFn}>{item.btnTitle}</button>&nbsp;&nbsp;</>
+                  <React.Fragment key={index} ><button className={item.className} onClick={item.onClickFn}>{item.btnTitle}</button>&nbsp;&nbsp;</React.Fragment>
                 ))
               }
             </div>
