@@ -45,7 +45,6 @@ const RegisterFlyer: FC = () => {
     address: "",
     storePositon: null as any,
   });
-  console.log('storeInfo', storeInfo);
   // 광고 등록 가능한 장소 리스트
   const [spotList, setSpotList] = useState<any[]>([]);
   // 광고 등록장소 필터값 입력
@@ -115,7 +114,6 @@ const RegisterFlyer: FC = () => {
   const handleStoreInfo = (key: string, value: string) => {
     setStoreInfo((prev) => ({ ...prev, [key]: value }));
   };
-  console.log(spotList);
 
   // 광고 등록장소 검색
   const searchSpot = () => {
@@ -129,7 +127,6 @@ const RegisterFlyer: FC = () => {
 
   // 선택한 광고 등록장소
   const [selectSpot, setSelectSpot] = useState("");
-  console.log('selectSpot', selectSpot);
   // 선택한 광고 등록장소로 지도 이동
   const movoSelectSpot = (latLng: string) => {
     if (!latLng) return;
@@ -143,7 +140,6 @@ const RegisterFlyer: FC = () => {
   const navigation = useNavigate();
   const registerStore = async () => {
 
-    console.log('storeInfo', storeInfo);
     if (Object.values(storeInfo).filter(item => !item).length > 0) return alert('가게 정보를 입력하세요');
 
     try {
@@ -194,7 +190,6 @@ const RegisterFlyer: FC = () => {
     const formData = new FormData();
     formData.append('storeId', storeId.toString());
     formData.append('flyerFile', file[0]);
-    console.log('formData', formData);
     const res = await Axios.put('https://lookthis-back.nhncloud.paas-ta.com/store/saveFlyer', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -202,7 +197,6 @@ const RegisterFlyer: FC = () => {
         Authorization: 'Bearer ' + user.jwt,
       },
     });
-    console.log('flyerId', res);
     return res;
   };
 
@@ -216,14 +210,6 @@ const RegisterFlyer: FC = () => {
 
   // 광고 보여줄 장소 삭제
   const deleteFlyerSpot = async (spotId:number, flyerId: number) => {
-
-    const axiosConfig = {
-      headers: {
-          // 'Content-Type': 'application/json',
-          // Accept: 'application/json; charset=UTF-8',
-          Authorization: 'Bearer ' + user.jwt,
-      },
-    };
     await Axios.post(
       "https://lookthis-back.nhncloud.paas-ta.com/store/deleteFlyerSpot",
       JSON.stringify({ spotId, flyerId }), '', user.jwt
@@ -298,7 +284,7 @@ const RegisterFlyer: FC = () => {
           <Map curLocation={curLocation} />
         </div>
         <div className="file-wrap">
-          광고 이미지 등록 {storeId && flyerId && ('(이미지를 등록하지 않으면 기존 이미지를 사용합니다.)')}
+          광고 이미지 등록 {storeId && flyerId && <span style={{color:'blue'}}>(이미지를 등록하지 않으면 기존 이미지를 사용합니다.)</span>}
           <FilesUpload file={file} setFile={setFile} />
         </div>
         {/* <Content contentsUrl={contents} /> */}
