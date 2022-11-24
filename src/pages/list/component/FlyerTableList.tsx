@@ -36,12 +36,11 @@ export default FlyerTableList;
 const Item: FC<{ flyer: any }> = ({ flyer }) => {
 
   const navigation = useNavigate();
-  // console.log('flyer', flyer)
   return (
     <>
     {flyer.path &&
       <div style={{ padding: "20px", maxWidth: "18%", minWidth: "18%" }} onClick={() => navigation(`/detail/${flyer.storeId}/${flyer.flyerId}`)}>
-      <img src={`https://lookthis.s3.ap-northeast-2.amazonaws.com/flyer/image${flyer.path}`} alt="" style={{width:'100%'}} />
+      <img src={`https://lookthis.s3.ap-northeast-2.amazonaws.com/flyer/image${flyer.path}`} alt="" style={{width:'100%', height:'240px'}} />
       <p style={{ fontSize: "20px" }}>{flyer.storeName}</p>
     </div>
     }

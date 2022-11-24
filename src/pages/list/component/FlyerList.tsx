@@ -21,7 +21,7 @@ const FlyerList: FC = () => {
         "https://lookthis-back.nhncloud.paas-ta.com/store/getStoreList",
         JSON.stringify({ userId:user.userId }),'', user.jwt
       );
-      console.log("storeList", storeList);
+      // console.log("storeList", storeList);
 
       const [getflyerAxios, storeInfos]: [any[], any[]] = storeList.reduce(
         (arr, curStore) => {
@@ -47,24 +47,14 @@ const FlyerList: FC = () => {
       // console.log('storeInfos', storeInfos);
 
       const flyerList = await Promise.all(getflyerAxios);
-      console.log("flyerList", flyerList);
-      const [getFlyerSpotListAxios] = flyerList.reduce((arr, cur, index) => {
-        arr[0].push(
-          Axios.post(
-            "https://lookthis-back.nhncloud.paas-ta.com/store/getFlyerSpotList",
-            JSON.stringify({ flyerId: cur[0]?.flyerId }), '', user.jwt
-          )
-        );
-        arr[1][index].path = cur[0]?.path || '';
-        arr[1][index].flyerId = cur[0]?.flyerId || '';
-        return arr;
-      }, [[], storeInfos]);
-      console.log("storeInfos", storeInfos);
-      
-      const flyerSpotList = await Promise.all(getFlyerSpotListAxios);
-      console.log('flyerSpotList', flyerSpotList);
-
-      // flyerSpotList.forEach(spotInfo => storeInfos.)
+      // console.log("flyerList", flyerList);
+      flyerList.forEach((flyer, index) => {
+        if(flyer[0]) {
+          storeInfos[index].path = flyer[0].path
+          storeInfos[index].flyerId = flyer[0].flyerId
+        };
+      });
+      // console.log("storeInfos", storeInfos);
       
       setStoreInfos(prev => storeInfos);
       setPageInfo(prev => ({...prev, dataCnt: storeInfos.length}));

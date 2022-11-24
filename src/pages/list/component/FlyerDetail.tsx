@@ -32,7 +32,6 @@ const FlyerDetail: FC = () => {
     const getDetailInfo = async () => {
       const [store, flyer, spot] = await getDetail(user, storeId as string, flyerId  as string);
       const {address, lat, lng, storeName} = store;
-      console.log(lat, lng);
       setStoreInfo((prev: any) => ({ ...prev, storeName, address, storePositon: new naver.maps.LatLng(Number(lat), Number(lng)) }));
       setDetailInfo((prev: any) => ({ ...prev, ...store, ...flyer, spotId:spot.spotId, spotLat:spot.lat, spotLng:spot.lng }));
       setSelectSpot((prev: any) => spot.station + ' ' + spot.stationExit + '번 출구');
@@ -42,7 +41,7 @@ const FlyerDetail: FC = () => {
     naver && getDetailInfo();
 
   }, [naver]);
-  console.log('detailInfo', detailInfo);
+  // console.log('detailInfo', detailInfo);
 
   // 광고 위치
   const [curLocation, setCurLocation] = useState<naver.maps.LatLng | null>(
@@ -55,7 +54,6 @@ const FlyerDetail: FC = () => {
     address: "",
     storePositon: null as any,
   });
-  console.log('storeInfo', storeInfo);
 
   // 선택한 광고 등록장소 이름
   const [selectSpot, setSelectSpot] = useState("");
@@ -100,7 +98,7 @@ const FlyerDetail: FC = () => {
           <div className="file-wrap">
             광고 이미지
             <div style={{ padding: "20px", maxWidth: "18%", minWidth: "18%" }} >
-              <img src={`https://lookthis.s3.ap-northeast-2.amazonaws.com/flyer/image${detailInfo.path}`} alt="" style={{width:'100%'}} />
+              {detailInfo.path && <img src={`https://lookthis.s3.ap-northeast-2.amazonaws.com/flyer/image${detailInfo.path}`} alt="" style={{width:'100%'}} />}
            </div>
           </div>
           {/* <Content contentsUrl={contents} /> */}
@@ -119,7 +117,6 @@ interface MapProps {
 }
 // 네이버 지도
 const Map: FC<MapProps> = ({ curLocation }) => {
-  console.log('여기',curLocation);
   const { naver } = window;
   const [map, setMap] = useState<naver.maps.Map | null>(null);
   const [marker, setMarker] = useState<naver.maps.Marker | null>(null);
@@ -153,7 +150,6 @@ const Map: FC<MapProps> = ({ curLocation }) => {
   // 지도 위치 변경
   useEffect(() => {
     if (map && marker && curLocation) {
-      console.log('여어기');
       map.setCenter(curLocation);
       marker.setPosition(curLocation);
     }

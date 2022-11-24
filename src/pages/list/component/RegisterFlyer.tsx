@@ -79,7 +79,7 @@ const RegisterFlyer: FC = () => {
       movoSelectSpot(spot.lat + ' ' + spot.lng + ' ' + spot.spotId);
     };
 
-    naver && getDetailInfo();
+    naver && storeId && flyerId && getDetailInfo();
   },[naver]);
 
   // 주소검색해서 위도, 경도 가져오기
