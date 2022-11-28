@@ -144,6 +144,7 @@ const RegisterFlyer: FC = () => {
   const registerStore = async () => {
 
     if (Object.values(storeInfo).filter(item => !item).length > 0) return alert('가게 정보를 입력하세요');
+    if (!storeId && !!!file) return alert('이미지를 등록하세요');
 
     try {
       // Step 1. 가게 정보 저장
@@ -162,7 +163,7 @@ const RegisterFlyer: FC = () => {
       navigation(`/detail/${storeId}/${flyerIdRes}`);
     }
     catch (error) {
-      console.log(error);
+      // console.log(error);
       alert("에러발생!!!")
     };
 
