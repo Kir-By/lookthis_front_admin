@@ -105,7 +105,7 @@ const SideMenubar:React.FC = () => {
 
     return(
         <nav>
-            <img className="logo" src={logo} alt="" style={{width:146}} />
+            <img className="logo" src={logo} alt="" style={{ width: '250px', marginLeft: '-35px', marginTop: '-40px' }} />
             <SideMenu activeMenu={activeMenu} sideMenus={sideMenus} setActiveMenu={setActiveMenu}/>
             {/* 로그아웃 */}
             <div className="user-function">
