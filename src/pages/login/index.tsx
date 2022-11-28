@@ -6,6 +6,7 @@ import jwt_decode from "jwt-decode";
 import { userInfo } from 'state';
 import img from 'assets/images/common/lookthis2.png'
 import Axios from 'utils/Axios';
+import { useEventKeyCode } from 'hooks/useEventKeyCode';
 
 const Login: React.FC = () => {
 
@@ -55,24 +56,27 @@ const Login: React.FC = () => {
     };
 
     try {
-      const res = await Axios.post(
+      const loginUrl = await Axios.post(
         "https://lookthis-back.nhncloud.paas-ta.com/login/doLogin",
         formObj, axiosConfig
       );
+      navigation(loginUrl);
     }
     catch (error:any) {
       // console.log('error', error);
       // console.log('error1', error.response.status);
 
-      if(error.response.status === 404) {
-        const loginUrl = '/oauth2/redirect/';
-        // console.log('error2', error.request.responseURL.split(loginUrl));
-        const loginPath = error.request.responseURL.split(loginUrl)[1];
-        navigation(loginUrl + loginPath);
-      };
+      // if(error.response.status === 404) {
+      //   const loginUrl = '/oauth2/redirect/';
+      //   // console.log('error2', error.request.responseURL.split(loginUrl));
+      //   const loginPath = error.request.responseURL.split(loginUrl)[1];
+      //   navigation(loginUrl + loginPath);
+      // };
     }
    
   };
+
+  useEventKeyCode(handleLogin, 'Enter');
 
   return (
     <article>
