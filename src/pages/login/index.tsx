@@ -11,20 +11,20 @@ const Login: React.FC = () => {
 
   const navigation = useNavigate();
   const setUserInfo = useSetRecoilState(userInfo);
-  
+
   // OAuth Login
   const { jwtToken } = useParams();
-  
+
   useEffect(() => {
 
-    if(jwtToken) {
-        const useInfo:any = jwt_decode(jwtToken);
-        sessionStorage.setItem('userId', useInfo.userId);
-        sessionStorage.setItem('jwt', jwtToken);
-        setUserInfo({ userId: useInfo.userId, jwt: jwtToken });
-        navigation('/list');
+    if (jwtToken) {
+      const useInfo: any = jwt_decode(jwtToken);
+      sessionStorage.setItem('userId', useInfo.userId);
+      sessionStorage.setItem('jwt', jwtToken);
+      setUserInfo({ userId: useInfo.userId, jwt: jwtToken });
+      navigation('/list');
     }
-    
+
   }, [jwtToken]);
 
   // 일반 Login
@@ -43,16 +43,21 @@ const Login: React.FC = () => {
 
     if (Object.values(loginInfo).filter(item => !item).length > 0) return alert('로그인 정보를 입력하세요');
 
+    const formObj = new FormData();
+    formObj.append('userId', loginInfo.userId);
+    formObj.append('password', loginInfo.password);
+
     const axiosConfig = {
       headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json; charset=UTF-8',
-          // Authorization: 'Bearer ' + jwt,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json; charset=UTF-8',
+        // Authorization: 'Bearer ' + jwt,
       },
     };
+
     const res = await Axios.post(
       "https://lookthis-back.nhncloud.paas-ta.com/login/doLogin",
-      JSON.stringify(loginInfo), axiosConfig
+      formObj, axiosConfig
     );
 
     console.log(res);
@@ -67,13 +72,13 @@ const Login: React.FC = () => {
             style={{ justifyContent: "center", minHeight: "450px" }}
           >
             <div>
-              <img src={img} alt="" style={{width:'350px', marginTop:'-100px', marginBottom:'20pxs'}}/>
+              <img src={img} alt="" style={{ width: '350px', marginTop: '-100px', marginBottom: '20pxs' }} />
             </div>
             <section className="input-wrap">
               <input className="input login" type="text" placeholder="아이디" name="userId" value={loginInfo.userId} onChange={handleLoginInfo} />
               <input className="input password" type="password" placeholder="비밀번호" name="password" value={loginInfo.password} onChange={handleLoginInfo} autoComplete={"off"} />
               <button className="btn-cta" onClick={handleLogin}>로그인</button>
-              <button className="link_login" style={{marginTop: '10px'}}>
+              <button className="link_login" style={{ marginTop: '10px' }}>
                 <a
                   href="http://lookthis-back.nhncloud.paas-ta.com/oauth2/authorization/naver2"
                   data-clk="log_off.login"
