@@ -52,19 +52,44 @@ article { display: flex; position: relative;
                 transition: .1s ease;
                 cursor: pointer;
 
-                @for $i from 1 through 7 {
-                    &:nth-child(#{$i}) {
-                        &:before {
-                            content: '';
-                            position: absolute;
-                            top: 20px;
-                            left: 20px;
-                            width: 15px;
-                            height: 15px;
-                            background: url('../../assets/images/icon/i_lnb_0#{$i}.svg') 0 center no-repeat;
-                        }
+                &:nth-child(1) {
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        top: 20px;
+                        left: 20px;
+                        width: 15px;
+                        height: 15px;
+                        background: url('../../assets/images/icon/i_lnb_01.svg') 0 center no-repeat;
                     }
                 }
+
+                &:nth-child(2) {
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        top: 20px;
+                        left: 20px;
+                        width: 15px;
+                        height: 15px;
+                        background: url('../../assets/images/icon/i_lnb_05.svg') 0 center no-repeat;
+                    }
+                }
+                
+                // @for $i from 1 through 7 {
+                //     &:nth-child(#{$i}) {
+                //         &:before {
+                //             content: '';
+                //             position: absolute;
+                //             top: 20px;
+                //             left: 20px;
+                //             width: 15px;
+                //             height: 15px;
+                //             background: url('../../assets/images/icon/i_lnb_0#{$i}.svg') 0 center no-repeat;
+                //         }
+                //     }
+                // }
+                
                 &.active { 
                     .menu { color: #fff; text-decoration: underline; font-weight: bold; }
                    > a { color: #fff; text-decoration: underline; }
