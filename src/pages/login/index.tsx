@@ -43,7 +43,7 @@ const Login: React.FC = () => {
 
               <button className="link_login">
                 <a
-                  href="http://lookthis-back.nhncloud.paas-ta.com/oauth2/authorization/naver"
+                  href="http://lookthis-back.nhncloud.paas-ta.com/oauth2/authorization/naver2"
                   data-clk="log_off.login"
                 >
                   <i className="ico_naver">
