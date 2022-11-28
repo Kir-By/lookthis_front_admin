@@ -51,16 +51,27 @@ const Login: React.FC = () => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Accept: 'application/json; charset=UTF-8',
-        // Authorization: 'Bearer ' + jwt,
       },
     };
 
-    const res = await Axios.post(
-      "https://lookthis-back.nhncloud.paas-ta.com/login/doLogin",
-      formObj, axiosConfig
-    );
+    try {
+      const res = await Axios.post(
+        "https://lookthis-back.nhncloud.paas-ta.com/login/doLogin",
+        formObj, axiosConfig
+      );
+    }
+    catch (error:any) {
+      // console.log('error', error);
+      // console.log('error1', error.response.status);
 
-    console.log(res);
+      if(error.response.status === 404) {
+        const loginUrl = '/oauth2/redirect/';
+        // console.log('error2', error.request.responseURL.split(loginUrl));
+        const loginPath = error.request.responseURL.split(loginUrl)[1];
+        navigation(loginUrl + loginPath);
+      };
+    }
+   
   };
 
   return (
