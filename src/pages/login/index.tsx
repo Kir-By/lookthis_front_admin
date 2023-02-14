@@ -57,7 +57,7 @@ const Login: React.FC = () => {
 
     try {
       const loginUrl = await Axios.post(
-        "https://lookthis-back.nhncloud.paas-ta.com/login/doLogin",
+        "https://lookthis.co.kr/login/doLogin",
         formObj, axiosConfig
       );
       navigation(loginUrl);
@@ -95,7 +95,7 @@ const Login: React.FC = () => {
               <button className="btn-cta" onClick={handleLogin}>로그인</button>
               <button className="link_login" style={{ marginTop: '10px' }}>
                 <a
-                  href="http://lookthis-back.nhncloud.paas-ta.com/oauth2/authorization/naver2"
+                  href="http://lookthis.co.kr/oauth2/authorization/naver2"
                   data-clk="log_off.login"
                 >
                   <i className="ico_naver">

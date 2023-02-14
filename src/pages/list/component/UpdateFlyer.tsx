@@ -36,7 +36,7 @@ import { useNavigate } from "react-router-dom";
     const [curLocation, setCurLocation] = useState<naver.maps.LatLng | null>(
       null
     );
-    // 가게 정보
+    // 업체 정보
     const [storeInfo, setStoreInfo] = useState({
         storeName: "",
         address: "",
@@ -55,7 +55,7 @@ import { useNavigate } from "react-router-dom";
     useEffect(() => {
         const getSpotList = async () => {
           const spotResult = (await Axios.post(
-            "https://lookthis-back.nhncloud.paas-ta.com/getSpotList",
+            "https://lookthis.co.kr/getSpotList",
             {}
           )) as any[];
           setSpotList((prev) => spotResult);
@@ -95,7 +95,7 @@ import { useNavigate } from "react-router-dom";
       );
     };
  
-    // 가게 정보 입력
+    // 업체 정보 입력
     const handleStoreInfo = (key: string, value: string) => {
       setStoreInfo((prev) => ({ ...prev, [key]: value }));
     };
@@ -128,7 +128,7 @@ import { useNavigate } from "react-router-dom";
     const registerStore = async () => {
         
       console.log('storeInfo', storeInfo);
-      if(Object.values(storeInfo).filter(item => !item).length > 0) return alert('가게 정보를 입력하세요');
+      if(Object.values(storeInfo).filter(item => !item).length > 0) return alert('업체 정보를 입력하세요');
       
       try {
         const storeId = await saveStore();
@@ -149,14 +149,14 @@ import { useNavigate } from "react-router-dom";
 
       const saveStoreParams = {
         userId,
-        address: storeInfo.address, // 가게 위치
-        lat: Number(storeInfo.storePositon.y), // 가게 lat
-        lng: Number(storeInfo.storePositon.x), // 가게 lng
-        storeName: storeInfo.storeName, // 가게 이름
+        address: storeInfo.address, // 업체 위치
+        lat: Number(storeInfo.storePositon.y), // 업체 lat
+        lng: Number(storeInfo.storePositon.x), // 업체 lng
+        storeName: storeInfo.storeName, // 업체 이름
       };
 
       const res = await Axios.put(
-        "https://lookthis-back.nhncloud.paas-ta.com/saveStore",
+        "https://lookthis.co.kr/saveStore",
         JSON.stringify(saveStoreParams)
       );
 
@@ -169,7 +169,7 @@ import { useNavigate } from "react-router-dom";
         formData.append('storeId', storeId.toString());
         formData.append('flyerFile', file[0]);
         console.log('formData', formData);
-        const res = await Axios.put('https://lookthis-back.nhncloud.paas-ta.com/saveFlyer', formData, {
+        const res = await Axios.put('https://lookthis.co.kr/saveFlyer', formData, {
           headers: {
               'Content-Type': 'multipart/form-data',
               Accept: 'application/json; charset=UTF-8',
@@ -183,7 +183,7 @@ import { useNavigate } from "react-router-dom";
     const saveFlyerSpot = async (flyerId: number) => {
       console.log(spotId);
       await Axios.put(
-        "https://lookthis-back.nhncloud.paas-ta.com/insertFlyerSpot",
+        "https://lookthis.co.kr/insertFlyerSpot",
         JSON.stringify({ spotId, flyerId })
       );
     };
@@ -200,15 +200,15 @@ import { useNavigate } from "react-router-dom";
               <InfoInput
                 inputName="storeName"
                 inputValue={storeInfo.storeName}
-                placeholder="가게 이름을 입력하세요"
-                title="가게 이름"
+                placeholder="업체 이름을 입력하세요"
+                title="업체 이름"
                 setFn={handleStoreInfo}
               />
               <InfoInput
                 inputName="address"
                 inputValue={storeInfo.address}
-                placeholder="가게 주소을 입력하세요"
-                title="가게 주소"
+                placeholder="업체 주소을 입력하세요"
+                title="업체 주소"
                 setFn={handleStoreInfo}
               >
                 &nbsp;&nbsp;
@@ -253,7 +253,7 @@ import { useNavigate } from "react-router-dom";
               </div>
               <div className="file-wrap">
                 이미지 등록
-                <FilesUpload file={file} setFile={setFile} />
+                {/* <FilesUpload file={file} setFile={setFile} /> */}
               </div>
               {/* <Content contentsUrl={contents} /> */}
               {/* <!-- 파일첨부 --> */}

@@ -17,17 +17,20 @@ const FlyerList: FC = () => {
     if(!user.userId) return;
 
     const getStoreList = async () => {
+
+      // 업체 목록 가져오기
       const storeList: any[] = await Axios.post(
-        "https://lookthis-back.nhncloud.paas-ta.com/store/getStoreList",
+        "https://lookthis.co.kr/store/getStoreList",
         JSON.stringify({ userId:user.userId }),'', user.jwt
       );
       // console.log("storeList", storeList);
 
+      // [전단지 조회 파라미터, 업체 정보]
       const [getflyerAxios, storeInfos]: [any[], any[]] = storeList.reduce(
         (arr, curStore) => {
           arr[0].push(
             Axios.post(
-              "https://lookthis-back.nhncloud.paas-ta.com/store/getStoreFlyerList",
+              "https://lookthis.co.kr/store/getStoreFlyerList",
               JSON.stringify({ storeId: curStore.storeId }),'', user.jwt
             )
           );
@@ -46,8 +49,11 @@ const FlyerList: FC = () => {
       // console.log("getflyerAxios", getflyerAxios);
       // console.log('storeInfos', storeInfos);
 
+      // 전단지 정보 조회
       const flyerList = await Promise.all(getflyerAxios);
       // console.log("flyerList", flyerList);
+
+      // 업체 정보에 전단지 정보 추가
       flyerList.forEach((flyer, index) => {
         if(flyer[0]) {
           storeInfos[index].path = flyer[0].path

@@ -1,7 +1,7 @@
 import loadable, { LoadableComponent } from '@loadable/component';
 
 const Flyer = loadable(() => import('pages/list'));
-const RegisterFlyer = loadable(() => import('pages/list/component/RegisterFlyer'));
+const RegisterFlyer = loadable(() => import('pages/register'));
 
 // 사이드 메뉴
 type SIDE_MENU_TYPE = {
