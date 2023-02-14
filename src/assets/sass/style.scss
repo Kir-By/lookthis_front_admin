@@ -499,7 +499,7 @@ select { @include select-style; }
 .chart-wrap { padding: 20px; margin-top: 15px; background: #fff; }
 
 .storeInfo {
-    width: 260px;
+    min-width: 280px;
     height: 46px;
     line-height: 46px;
     border-radius: 4px;
@@ -527,7 +527,7 @@ select { @include select-style; }
 };
 
 .registerSelect {
-    width: 140px;
+    min-width: 215px;
     height: 46px;
     font-size: 16px;
     border: 1px solid #ddd;

@@ -48,7 +48,7 @@ const FlyerDetail: FC = () => {
     null
   );
 
-  // 가게 정보
+  // 업체 정보
   const [storeInfo, setStoreInfo] = useState({
     storeName: "",
     address: "",
@@ -68,17 +68,17 @@ const FlyerDetail: FC = () => {
     <>
       {naver && detailInfo && (
         <div className="view-wrap">
-          {/* <!-- 가게 등록 정보 --> */}
+          {/* <!-- 업체 등록 정보 --> */}
           <InfoInput
             inputName="storeName"
             inputValue={storeInfo.storeName}
-            title="가게 이름"
+            title="업체 이름"
           />
           <div style={{marginTop: '30px'}}>
           <InfoInput
             inputName="address"
             inputValue={storeInfo.address}
-            title="가게 주소"
+            title="업체 주소"
           />
           </div>
           <div style={{ padding: "0px 20px 0px" }}>
