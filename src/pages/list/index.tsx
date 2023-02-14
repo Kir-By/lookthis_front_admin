@@ -1,11 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
-
-// component
 import { useNavigate, useParams } from "react-router-dom";
 import loadable from '@loadable/component';
+
+// component
 const FlyerList = loadable(() => import('pages/list/component/FlyerList'));
 const FlyerDetail = loadable(() => import('pages/list/component/FlyerDetail'));
-const RegisterFlyer = loadable(() => import('pages/list/component/RegisterFlyer'));
+const Register = loadable(() => import('pages/register'));
 
 const FlyerListContainer: FC = () => {
 
@@ -27,7 +27,7 @@ const FlyerListContainer: FC = () => {
 
   const setComponent = () => {
     if (status === BOARD_STATUS.LIST) return <FlyerList />;
-    else if (status === BOARD_STATUS.REGISTER) return <RegisterFlyer />;
+    else if (status === BOARD_STATUS.REGISTER) return <Register />;
     else if (status.includes(BOARD_STATUS.DETAIL)) return <FlyerDetail />;
     else if (status.includes(BOARD_STATUS.UPDATE)) return <FlyerDetail />;
   };
