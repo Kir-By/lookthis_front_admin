@@ -19,9 +19,8 @@ const FlyerList: FC = () => {
     const getStoreList = async () => {
 
       // 업체 목록 가져오기
-      const storeList: any[] = await Axios.post(
-        "https://lookthis.co.kr/store/getStoreList",
-        JSON.stringify({ userId:user.userId }),'', user.jwt
+      const storeList: any[] = await Axios.get(
+        "https://lookthis.co.kr/api/store/user/"+user.userId,'','', user.jwt
       );
       // console.log("storeList", storeList);
 
@@ -29,9 +28,8 @@ const FlyerList: FC = () => {
       const [getflyerAxios, storeInfos]: [any[], any[]] = storeList.reduce(
         (arr, curStore) => {
           arr[0].push(
-            Axios.post(
-              "https://lookthis.co.kr/store/getStoreFlyerList",
-              JSON.stringify({ storeId: curStore.storeId }),'', user.jwt
+            Axios.get(
+              "https://lookthis.co.kr/api/store/"+curStore.storeId+"/flyers", '','', user.jwt
             )
           );
           arr[1].push({

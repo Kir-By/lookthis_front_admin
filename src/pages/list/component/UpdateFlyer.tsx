@@ -54,9 +54,9 @@ import { useNavigate } from "react-router-dom";
     // 로딩 시 광고 등록장소 리스트 가져오기
     useEffect(() => {
         const getSpotList = async () => {
-          const spotResult = (await Axios.post(
-            "https://lookthis.co.kr/getSpotList",
-            {}
+          const spotResult = (await Axios.get(
+            "https://lookthis.co.kr/api/spots",
+            '','', userId.jwt
           )) as any[];
           setSpotList((prev) => spotResult);
         };
@@ -156,8 +156,8 @@ import { useNavigate } from "react-router-dom";
       };
 
       const res = await Axios.put(
-        "https://lookthis.co.kr/saveStore",
-        JSON.stringify(saveStoreParams)
+        "https://lookthis.co.kr/api/store",
+        JSON.stringify(saveStoreParams),'', userId.jwt
       );
 
       return res;
@@ -169,7 +169,7 @@ import { useNavigate } from "react-router-dom";
         formData.append('storeId', storeId.toString());
         formData.append('flyerFile', file[0]);
         console.log('formData', formData);
-        const res = await Axios.put('https://lookthis.co.kr/saveFlyer', formData, {
+        const res = await Axios.put('https://lookthis.co.kr/api/flyer', formData, {
           headers: {
               'Content-Type': 'multipart/form-data',
               Accept: 'application/json; charset=UTF-8',
@@ -183,7 +183,7 @@ import { useNavigate } from "react-router-dom";
     const saveFlyerSpot = async (flyerId: number) => {
       console.log(spotId);
       await Axios.put(
-        "https://lookthis.co.kr/insertFlyerSpot",
+        "https://lookthis.co.kr/api/flyer/spot",
         JSON.stringify({ spotId, flyerId })
       );
     };

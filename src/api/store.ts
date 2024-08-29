@@ -22,7 +22,7 @@ const saveStore = async (storeInfo: StoreInfo, user: UserInfo) => {
   };
 
   const res = await Axios.put(
-    "https://lookthis.co.kr/store/saveStore",
+    "https://lookthis.co.kr/api/store/saveStore",
     JSON.stringify(saveStoreParams),
     "",
     user.jwt

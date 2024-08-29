@@ -9,7 +9,7 @@ export const saveFlyerImg = async (storeId: number, file: any, user: UserInfo) =
   formData.append("storeId", storeId.toString());
   formData.append("flyerFile", file[0]);
   const res = await Axios.put(
-    "https://lookthis.co.kr/store/saveFlyer",
+    "https://lookthis.co.kr/api/flyer",
     formData,
     {
       headers: {
@@ -25,7 +25,7 @@ export const saveFlyerImg = async (storeId: number, file: any, user: UserInfo) =
 // 광고 보여줄 장소 등록
 export const saveFlyerSpot = async (spotId: number, flyerId: number, user: UserInfo) => {
   await Axios.put(
-    "https://lookthis.co.kr/store/insertFlyerSpot",
+    "https://lookthis.co.kr/api/flyer/spot",
     JSON.stringify({ spotId, flyerId }),
     "",
     user.jwt
@@ -34,8 +34,8 @@ export const saveFlyerSpot = async (spotId: number, flyerId: number, user: UserI
 
 // 광고 보여줄 장소 삭제
 export const deleteFlyerSpot = async (spotId: number, flyerId: number, user: UserInfo) => {
-  await Axios.post(
-    "https://lookthis.co.kr/store/deleteFlyerSpot",
+  await Axios.delete(
+    "https://lookthis.co.kr/api/store/deleteFlyerSpot",
     JSON.stringify({ spotId, flyerId }),
     "",
     user.jwt
@@ -44,8 +44,8 @@ export const deleteFlyerSpot = async (spotId: number, flyerId: number, user: Use
 
 // 지하철역 장소 리스트 가져오기
 export const getSpotList = async (user: UserInfo) => {
-  return (await Axios.post(
-    "https://lookthis.co.kr/spot/getSpotList",
+  return (await Axios.get(
+    "https://lookthis.co.kr/api/spots",
     {},
     "",
     user.jwt

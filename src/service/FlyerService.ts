@@ -2,9 +2,9 @@ import { UserInfo } from "state";
 import Axios from "utils/Axios";
 
 const getDetail = async (user:UserInfo, storeId:string, flyerId:string) => {
-    const storeList: any[] = await Axios.post(
-      "https://lookthis.co.kr/store/getStoreList",
-      JSON.stringify({ userId: user.userId }),'',user.jwt
+    const storeList: any[] = await Axios.get(
+      "https://lookthis.co.kr/api/store/user/"+user.userId,
+      '','',user.jwt
     );
 
     const store = storeList.filter(
@@ -12,15 +12,15 @@ const getDetail = async (user:UserInfo, storeId:string, flyerId:string) => {
     )[0];
     // console.log("store", store);
 
-    const flyerRes = await Axios.post(
-      "https://lookthis.co.kr/store/getStoreFlyerList",
-      JSON.stringify({ storeId }),'',user.jwt
+    const flyerRes = await Axios.get(
+      "https://lookthis.co.kr/api/store/"+storeId+"/flyers",
+      '','',user.jwt
     );
     // console.log("flyer", flyerRes);
 
-    const spotRes = await Axios.post(
-      "https://lookthis.co.kr/store/getFlyerSpotList",
-      JSON.stringify({ flyerId }), '', user.jwt
+    const spotRes = await Axios.get(
+      "https://lookthis.co.kr/api/flyer/"+flyerId+"/spots",
+      '', '', user.jwt
     );
     // console.log("spot", spotRes);
     

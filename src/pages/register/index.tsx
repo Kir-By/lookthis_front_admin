@@ -53,6 +53,9 @@ const Register: FC = () => {
   const handleRegister = useCallback(() => {
     // Validation
     if (Object.values(storeInfo).filter((item) => !item).length > 0)
+      console.log("storeInfo", storeInfo);
+      console.log("flyerInfo", flyerInfo);
+      console.log("item", Object.values(storeInfo).filter((item) => !item));
       return alert("업체 정보를 입력하세요");
     if (!storeInfo.storeId && !!!flyerInfo.file)
       return alert("이미지를 등록하세요");
